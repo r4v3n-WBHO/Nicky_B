@@ -54,6 +54,8 @@ jobs:
           # Settings → Secrets and variables → Actions → New repository secret
           # (name: FORMSUBMIT_ID). Forms won't send email until this is set.
           NEXT_PUBLIC_FORMSUBMIT_ID: ${{ secrets.FORMSUBMIT_ID }}
+          # Optional analytics — set repo secret PLAUSIBLE_DOMAIN to switch on.
+          NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${{ secrets.PLAUSIBLE_DOMAIN }}
         run: npm run build
 
       - name: Upload Pages artifact

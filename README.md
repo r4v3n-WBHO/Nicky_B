@@ -180,3 +180,9 @@ scripts/
   change these in the CMS to match how he likes to group his work.
 - Confirm Nicky's **email address** and any **social links**, then add them to
   `src/data/site.ts` (these aren't in the CMS yet).
+- **Analytics:** off by default. Set a repo secret `PLAUSIBLE_DOMAIN` to enable
+  privacy-friendly visitor stats. Free options that work with the same snippet
+  approach: **Cloudflare Web Analytics** (add via `NEXT_PUBLIC_PLAUSIBLE_SRC`) or
+  **GoatCounter**.
+- See **`SETUP.md`** for the full go-live checklist and **`PHOTO-GUIDE.md`** for
+  photographing knives.
