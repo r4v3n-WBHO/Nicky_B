@@ -36,16 +36,16 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         )}
       </div>
-      <div className="p-4">
-        <h3 className="font-serif text-lg text-steel-50">{product.name}</h3>
+      <div className="p-3 sm:p-4">
+        <h3 className="font-serif text-base text-steel-50 sm:text-lg">{product.name}</h3>
         {product.tagline && (
-          <p className="mt-1 line-clamp-2 text-sm text-steel-400">{product.tagline}</p>
+          <p className="mt-1 line-clamp-2 text-xs text-steel-400 sm:text-sm">{product.tagline}</p>
         )}
-        <div className="mt-3 flex items-center justify-between">
-          <span className="text-sm font-medium text-forge-300">
+        <div className="mt-2 flex items-center justify-between gap-2 sm:mt-3">
+          <span className="text-xs font-medium text-forge-300 sm:text-sm">
             {product.inStock ? "Enquire for price" : "Sold"}
           </span>
-          <span className="text-sm text-steel-400 group-hover:text-forge-300">
+          <span className="hidden text-sm text-steel-400 group-hover:text-forge-300 sm:inline">
             View &rarr;
           </span>
         </div>

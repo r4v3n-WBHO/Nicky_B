@@ -43,7 +43,7 @@ export default function StorePage() {
           <p className="mt-1 text-sm text-steel-500">
             Sold pieces — a similar one can be made to order.
           </p>
-          <div className="mt-6 grid gap-6 opacity-70 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-2 gap-4 opacity-70 sm:gap-6 lg:grid-cols-3">
             {sold.map((p) => (
               <ProductCard key={p.slug} product={p} />
             ))}

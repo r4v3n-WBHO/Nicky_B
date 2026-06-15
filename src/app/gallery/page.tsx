@@ -26,18 +26,18 @@ export default function GalleryPage() {
       </header>
 
       {gallery.length > 0 ? (
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
           {gallery.map((item) => (
             <figure key={item.slug} className="card overflow-hidden">
               <div className="relative aspect-[4/3] bg-gradient-to-b from-steel-800 to-steel-950">
                 <ZoomImage
                   src={asset(item.image)}
                   alt={item.title}
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  sizes="(min-width: 1024px) 33vw, 50vw"
                 />
               </div>
-              <figcaption className="p-4">
-                <h2 className="font-serif text-lg text-steel-50">{item.title}</h2>
+              <figcaption className="p-3 sm:p-4">
+                <h2 className="font-serif text-base text-steel-50 sm:text-lg">{item.title}</h2>
                 {item.caption && (
                   <p className="mt-1 text-sm text-steel-400">{item.caption}</p>
                 )}

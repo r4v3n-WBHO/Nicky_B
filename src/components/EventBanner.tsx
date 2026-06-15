@@ -14,7 +14,7 @@ export default function EventBanner() {
       <div className="container-px flex flex-col gap-2 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-3">
         <div className="flex items-start gap-2.5">
           {event.kicker && (
-            <span className="mt-0.5 inline-flex h-5 items-center rounded-full bg-forge-600 px-2 text-[10px] font-bold uppercase tracking-wide text-white sm:text-xs">
+            <span className="mt-0.5 inline-flex h-5 shrink-0 items-center whitespace-nowrap rounded-full bg-forge-600 px-2 text-[10px] font-bold uppercase tracking-wide text-white sm:text-xs">
               {event.kicker}
             </span>
           )}
