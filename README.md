@@ -79,14 +79,18 @@ options (`src/data/templates.ts`).
 
 ## Receiving enquiries & custom orders
 
-Two different paths:
+Both the contact form and the custom-order builder offer **two ways to send**:
 
-- **Custom-order builder ("Request a quote")** → opens **WhatsApp** to Nicky,
-  pre-filled with the chosen spec. The customer presses send (and can attach
-  reference photos in the chat). Uses the number in `src/data/site.ts` — works
-  immediately, no setup. *(No email/record is captured unless they hit send.)*
-- **Contact form** → emailed via [FormSubmit](https://formsubmit.co), a free
-  service (no backend needed). Configure it as below.
+- **By email** (primary button) → delivered via [FormSubmit](https://formsubmit.co),
+  a free service (no backend). This captures a record, and the custom-order form
+  can include **reference-photo attachments** (up to 10 MB). Needs the one-time
+  setup below.
+- **On WhatsApp** (secondary button) → opens WhatsApp to Nicky pre-filled with
+  the message / knife spec; the customer presses send (and can attach photos in
+  the chat). Uses the number in `src/data/site.ts` — works immediately, no setup.
+
+So WhatsApp works out of the box; set up FormSubmit below to enable the email
+path too.
 
 **Until this is configured, the forms show a "please call" message instead of
 sending.** To turn it on:

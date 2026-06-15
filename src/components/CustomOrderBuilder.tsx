@@ -1,14 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { templates, getTemplate } from "@/data/templates";
 import type { CustomConfig } from "@/lib/content";
+import { submitInquiry } from "@/lib/submitInquiry";
 import { site } from "@/data/site";
 import { asset } from "@/lib/asset";
 
-type Status = "idle" | "sent";
+type Status = "idle" | "sending" | "sent" | "error";
 
 const BLADE_MIN_MM = 50;
 const BLADE_STEP_MM = 5;
@@ -58,8 +59,11 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
   const [selectedSlug, setSelectedSlug] = useState<string>(validInitial);
   const [sel, setSel] = useState<Selections>(() => defaultsFor(validInitial, config));
   const [status, setStatus] = useState<Status>("idle");
-  const [waUrl, setWaUrl] = useState("");
+  const [error, setError] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
 
+  const filesMb = files.reduce((n, f) => n + f.size, 0) / (1024 * 1024);
   const waBase =
     site.socials.whatsapp || `https://wa.me/${site.phoneHref.replace(/\D/g, "")}`;
 
@@ -85,48 +89,61 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
     [sel],
   );
 
-  function buildWhatsAppUrl(name: string, notes: string) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    setStatus("sending");
+    setError("");
+
+    const result = await submitInquiry({
+      kind: "custom-order",
+      name: String(data.get("name") || ""),
+      email: String(data.get("email") || ""),
+      phone: String(data.get("phone") || ""),
+      message: String(data.get("message") || ""),
+      details: summary,
+      files,
+    });
+
+    if (result.ok) {
+      setStatus("sent");
+    } else {
+      setStatus("error");
+      setError(result.error);
+    }
+  }
+
+  function openWhatsApp() {
+    const data = new FormData(formRef.current ?? undefined);
     const lines = ["Hi Nicky, I'd like a quote for a custom knife:"];
     for (const [k, v] of Object.entries(summary)) lines.push(`• ${k}: ${v}`);
+    const name = String(data.get("name") || "");
+    const notes = String(data.get("message") || "");
     if (name) lines.push("", `Name: ${name}`);
     if (notes) lines.push(`Notes: ${notes}`);
     lines.push("", "(I'll attach reference photos here in the chat.)");
-    return `${waBase}?text=${encodeURIComponent(lines.join("\n"))}`;
-  }
-
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const url = buildWhatsAppUrl(
-      String(data.get("name") || ""),
-      String(data.get("message") || ""),
+    window.open(
+      `${waBase}?text=${encodeURIComponent(lines.join("\n"))}`,
+      "_blank",
+      "noopener,noreferrer",
     );
-    setWaUrl(url);
-    window.open(url, "_blank", "noopener,noreferrer");
-    setStatus("sent");
   }
 
   if (status === "sent") {
     return (
       <div className="card mx-auto max-w-xl p-8 text-center">
-        <h3 className="font-serif text-2xl text-forge-300">Opening WhatsApp…</h3>
+        <h3 className="font-serif text-2xl text-forge-300">Request received</h3>
         <p className="mt-3 text-steel-300">
-          Your knife spec is ready in a WhatsApp message to Nicky — just press send
-          (and attach any reference photos in the chat). If WhatsApp didn&apos;t open,{" "}
-          <a className="text-forge-300 hover:underline" href={waUrl} target="_blank" rel="noopener noreferrer">
-            tap here
-          </a>{" "}
-          or call{" "}
-          <a className="text-forge-300 hover:underline" href={`tel:${site.phoneHref}`}>
-            {site.phone}
-          </a>.
+          Thanks — your custom knife request has been sent to Nicky. He&apos;ll be in
+          touch to confirm the details, timeline and price. For anything urgent,
+          call <a className="text-forge-300 hover:underline" href={`tel:${site.phoneHref}`}>{site.phone}</a>.
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1fr,360px]">
+    <form ref={formRef} onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1fr,360px]">
       {/* Left: builder */}
       <div className="space-y-8">
         {/* Step 1 — template */}
@@ -244,21 +261,48 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
         {/* Step 3 — your details */}
         <section>
           <h2 className="font-serif text-xl text-steel-50">3. Your details</h2>
-          <div className="mt-4 grid gap-4">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="field-label" htmlFor="name">Name</label>
               <input className="field-input" id="name" name="name" autoComplete="name" />
             </div>
             <div>
+              <label className="field-label" htmlFor="phone">Phone</label>
+              <input className="field-input" id="phone" name="phone" inputMode="tel" autoComplete="tel" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="field-label" htmlFor="email">Email</label>
+              <input className="field-input" id="email" name="email" type="email" autoComplete="email" />
+            </div>
+            <div className="sm:col-span-2">
               <label className="field-label" htmlFor="message">
                 Anything else? (engraving, deadline, budget…)
               </label>
               <textarea className="field-input min-h-[110px]" id="message" name="message" />
             </div>
+            <div className="sm:col-span-2">
+              <label className="field-label" htmlFor="photos">
+                Reference photos or sketches (optional)
+              </label>
+              <input
+                id="photos"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+                className="block w-full text-sm text-steel-300 file:mr-3 file:rounded-md file:border-0 file:bg-steel-700 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-steel-100 hover:file:bg-steel-600"
+              />
+              {files.length > 0 && (
+                <p className={`mt-1 text-xs ${filesMb > 10 ? "text-red-400" : "text-steel-500"}`}>
+                  {files.length} photo{files.length > 1 ? "s" : ""} selected ({filesMb.toFixed(1)} MB
+                  {filesMb > 10 ? " — too large, keep under 10 MB" : " / 10 MB max"})
+                </p>
+              )}
+            </div>
           </div>
           <p className="mt-2 text-xs text-steel-500">
-            Tapping the button opens WhatsApp with your spec ready to send — you can
-            add reference photos right in the chat.
+            Email your request (attach photos above), or send it straight to Nicky on
+            WhatsApp. Either way, include a phone or email so he can reply.
           </p>
         </section>
       </div>
@@ -276,9 +320,22 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
             ))}
           </dl>
 
-          <button type="submit" className="btn-primary mt-5 w-full">
+          {status === "error" && (
+            <p className="mt-4 rounded-md border border-red-500/40 bg-red-950/40 px-3 py-2 text-sm text-red-300">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="btn-primary mt-5 w-full"
+            disabled={status === "sending" || filesMb > 10}
+          >
+            {status === "sending" ? "Sending…" : "Request a quote by email"}
+          </button>
+          <button type="button" onClick={openWhatsApp} className="btn-secondary mt-2 w-full">
             <WhatsAppIcon />
-            Request a quote on WhatsApp
+            Or send on WhatsApp
           </button>
           <p className="mt-3 text-center text-xs text-steel-500">
             No payment now — Nicky confirms details &amp; price first.
