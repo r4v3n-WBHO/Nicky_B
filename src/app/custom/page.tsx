@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import CustomOrderBuilder from "@/components/CustomOrderBuilder";
-import { getCustomConfig } from "@/lib/content";
+import TrustInfo from "@/components/TrustInfo";
+import { getCustomConfig, getInfo } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Custom Order",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default function CustomPage() {
   const config = getCustomConfig();
+  const info = getInfo();
   return (
     <div className="container-px py-10 sm:py-14">
       <header className="max-w-2xl">
@@ -22,6 +24,7 @@ export default function CustomPage() {
           custom. Send your spec to Nicky and he&apos;ll reply with a quote and
           timeline — no payment until the details are agreed.
         </p>
+        <TrustInfo className="mt-4" lines={[info.leadTime, info.guarantee, info.payments]} />
       </header>
 
       <div className="mt-10">

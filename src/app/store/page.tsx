@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import StoreBrowser from "@/components/StoreBrowser";
-import { getProducts, getCategories } from "@/lib/content";
+import TrustInfo from "@/components/TrustInfo";
+import { getProducts, getCategories, getInfo } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Store",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function StorePage() {
   const products = getProducts();
   const categories = getCategories().map((c) => c.name);
+  const info = getInfo();
   const available = products.filter((p) => p.inStock);
   const sold = products.filter((p) => !p.inStock);
 
@@ -20,12 +22,15 @@ export default function StorePage() {
       <header className="max-w-2xl">
         <h1 className="font-serif text-3xl text-steel-50 sm:text-4xl">Store</h1>
         <p className="mt-3 text-steel-300">
-          Knives ready to go. Each is one-of-a-kind — once it&apos;s gone, it&apos;s
-          gone. Looking for something specific?{" "}
+          Each piece is hand-made and one-of-a-kind — once it&apos;s gone, it&apos;s
+          gone. <span className="text-steel-200">Prices are on enquiry</span>: message
+          Nicky for the price and to arrange payment &amp; delivery. Looking for
+          something specific?{" "}
           <Link href="/custom" className="text-forge-300 hover:underline">
             Order a custom knife.
           </Link>
         </p>
+        <TrustInfo className="mt-4" lines={[info.payments, info.guarantee]} />
       </header>
 
       {available.length > 0 ? (

@@ -171,6 +171,16 @@ const CUSTOM_DEFAULTS: CustomConfig = {
   bladeLengthMaxMm: 500,
 };
 
+export type ShopInfo = {
+  leadTime: string;
+  guarantee: string;
+  payments: string;
+};
+
+export function getInfo(): ShopInfo {
+  return readJson<ShopInfo>("info.json", { leadTime: "", guarantee: "", payments: "" });
+}
+
 export function getCustomConfig(): CustomConfig {
   const d = readJson<Partial<CustomConfig>>("custom.json", {});
   const list = (v: unknown, fallback: string[]) =>

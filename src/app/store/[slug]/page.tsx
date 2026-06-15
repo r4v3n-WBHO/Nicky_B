@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ZoomImage from "@/components/ZoomImage";
-import { getProducts, getProduct } from "@/lib/content";
+import TrustInfo from "@/components/TrustInfo";
+import { getProducts, getProduct, getInfo } from "@/lib/content";
 import { asset } from "@/lib/asset";
 
 export function generateStaticParams() {
@@ -20,6 +21,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const product = getProduct(params.slug);
   if (!product) notFound();
 
+  const info = getInfo();
   const enquiry = `Hi Nicky, I'm interested in the "${product.name}". Is it still available, and what's the price?`;
   const cover = product.images[0];
 
@@ -108,6 +110,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           <p className="mt-3 text-sm text-steel-500">
             No online checkout — Nicky arranges payment &amp; delivery with you directly.
           </p>
+
+          <TrustInfo className="mt-6 border-t border-steel-800 pt-6" lines={[info.guarantee, info.payments]} />
         </div>
       </div>
     </div>

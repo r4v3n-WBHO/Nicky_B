@@ -55,6 +55,7 @@ GitHub Actions, so the live site updates a minute or two later.
 | **Next event** | Update the home-page banner (title, date, location, blurb, button) or switch it off |
 | **About Nicky** | The "why I make knives" section on the contact page — heading, photo of Nicky, and his story |
 | **Custom order options** | The blade-shape, steel, handle-material and sheath choices in the custom-order builder, plus the max blade length |
+| **Shop info** | Lead time, guarantee/returns wording, and accepted payments (shown on the store, product and custom pages) |
 
 Photos uploaded in the CMS are stored in `public/images/uploads/`, and the
 deploy build **automatically removes the background** (via

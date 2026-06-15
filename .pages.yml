@@ -109,3 +109,13 @@ content:
       - { name: handleMaterials, label: Handle materials, type: string, list: true }
       - { name: sheaths, label: Sheath options, type: string, list: true }
       - { name: bladeLengthMaxMm, label: Max blade length (mm), type: number, default: 500 }
+
+  - name: info
+    label: Shop info (lead time, guarantee, payments)
+    type: file
+    path: content/info.json
+    format: json
+    fields:
+      - { name: leadTime, label: Custom-order lead time, type: text }
+      - { name: guarantee, label: Guarantee / returns, type: text }
+      - { name: payments, label: Payments accepted, type: text }
