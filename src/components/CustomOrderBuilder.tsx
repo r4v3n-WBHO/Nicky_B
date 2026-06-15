@@ -60,6 +60,9 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
   const [sel, setSel] = useState<Selections>(() => defaultsFor(validInitial, config));
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+
+  const filesMb = files.reduce((n, f) => n + f.size, 0) / (1024 * 1024);
 
   function pickTemplate(slug: string) {
     setSelectedSlug(slug);
@@ -97,6 +100,7 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
       phone: String(data.get("phone") || ""),
       message: String(data.get("message") || ""),
       details: summary,
+      files,
     });
 
     if (result.ok) {
@@ -258,25 +262,29 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
               </label>
               <textarea className="field-input min-h-[110px]" id="message" name="message" />
             </div>
+
+            <div className="sm:col-span-2">
+              <label className="field-label" htmlFor="photos">
+                Reference photos or sketches (optional)
+              </label>
+              <input
+                id="photos"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+                className="block w-full text-sm text-steel-300 file:mr-3 file:rounded-md file:border-0 file:bg-steel-700 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-steel-100 hover:file:bg-steel-600"
+              />
+              {files.length > 0 && (
+                <p className={`mt-1 text-xs ${filesMb > 10 ? "text-red-400" : "text-steel-500"}`}>
+                  {files.length} photo{files.length > 1 ? "s" : ""} selected ({filesMb.toFixed(1)} MB
+                  {filesMb > 10 ? " — too large, keep under 10 MB" : " / 10 MB max"})
+                </p>
+              )}
+            </div>
           </div>
           <p className="mt-2 text-xs text-steel-500">
-            Provide an email or phone number so Nicky can reply with a quote. Got
-            reference photos or sketches?{" "}
-            {site.socials.whatsapp ? (
-              <>
-                <a
-                  href={site.socials.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-forge-300 hover:underline"
-                >
-                  WhatsApp them to Nicky
-                </a>{" "}
-                after submitting (mention your name).
-              </>
-            ) : (
-              <>Send them to Nicky on {site.phone} after submitting.</>
-            )}
+            Provide an email or phone number so Nicky can reply with a quote.
           </p>
         </section>
       </div>
@@ -300,7 +308,11 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
             </p>
           )}
 
-          <button type="submit" className="btn-primary mt-5 w-full" disabled={status === "sending"}>
+          <button
+            type="submit"
+            className="btn-primary mt-5 w-full"
+            disabled={status === "sending" || filesMb > 10}
+          >
             {status === "sending" ? "Sending…" : "Request a quote"}
           </button>
           <p className="mt-3 text-center text-xs text-steel-500">

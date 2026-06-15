@@ -50,10 +50,10 @@ jobs:
           # automatically from the repository name. If you later use a custom
           # domain or a <user>.github.io repo, set this to an empty string.
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
-          # Web3Forms access key — add it under
+          # FormSubmit id (email or alias) — add it under
           # Settings → Secrets and variables → Actions → New repository secret
-          # (name: WEB3FORMS_KEY). Forms won't send email until this is set.
-          NEXT_PUBLIC_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
+          # (name: FORMSUBMIT_ID). Forms won't send email until this is set.
+          NEXT_PUBLIC_FORMSUBMIT_ID: ${{ secrets.FORMSUBMIT_ID }}
         run: npm run build
 
       - name: Upload Pages artifact

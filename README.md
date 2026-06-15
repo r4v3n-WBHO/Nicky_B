@@ -80,23 +80,28 @@ options (`src/data/templates.ts`).
 ## Receiving enquiries & custom orders by email
 
 Because the site is static (no server), the contact form and custom-order
-builder send submissions via [Web3Forms](https://web3forms.com) — a free
-service that emails you each submission. No backend or domain setup required.
+builder send submissions via [FormSubmit](https://formsubmit.co) — a free
+service that emails you each submission and supports **file attachments**
+(reference photos on the custom-order form, up to 10 MB total). No backend or
+domain setup required.
 
 **Until this is configured, the forms show a "please call" message instead of
 sending.** To turn it on:
 
-1. Go to <https://web3forms.com>, enter Nicky's email address, and copy the
-   **Access Key** it gives you.
-2. In GitHub: **Settings → Secrets and variables → Actions → New repository
-   secret**. Name it `WEB3FORMS_KEY`, paste the key, save.
-3. Re-run the deploy (push any change, or use the Actions tab → "Run workflow").
+1. Pick the inbox that should receive enquiries (Nicky's email).
+2. *(Recommended, for privacy)* get a random **alias** so the address isn't
+   exposed in the page: submit any FormSubmit form to that email once, confirm
+   the activation email, then copy the alias string from FormSubmit.
+3. In GitHub: **Settings → Secrets and variables → Actions → New repository
+   secret**. Name it `FORMSUBMIT_ID`, paste the alias (or the raw email), save.
+4. Re-run the deploy (push any change, or Actions tab → "Run workflow").
+5. The **first** real submission triggers a one-time FormSubmit confirmation
+   email — click to activate, then submissions flow through.
 
 For local testing, copy `.env.example` to `.env.local` and set
-`NEXT_PUBLIC_WEB3FORMS_KEY` there.
+`NEXT_PUBLIC_FORMSUBMIT_ID` there.
 
-> The access key is public by design (it ships inside the built site). It only
-> allows sending to Nicky's verified inbox, so this is safe.
+> Customers can also still WhatsApp photos to Nicky if they prefer.
 
 ---
 
