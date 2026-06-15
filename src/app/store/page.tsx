@@ -16,7 +16,7 @@ export default function StorePage() {
   const sold = products.filter((p) => !p.inStock);
 
   return (
-    <div className="container-px py-14">
+    <div className="container-px py-10 sm:py-14">
       <header className="max-w-2xl">
         <h1 className="font-serif text-3xl text-steel-50 sm:text-4xl">Store</h1>
         <p className="mt-3 text-steel-300">

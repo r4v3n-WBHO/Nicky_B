@@ -16,7 +16,7 @@ export default function ContactPage() {
   const about = getAbout();
 
   return (
-    <div className="container-px py-14">
+    <div className="container-px py-10 sm:py-14">
       {/* About / the maker */}
       {(about.body || about.heading) && (
         <section className="mb-16 grid items-center gap-8 md:grid-cols-[280px,1fr]">

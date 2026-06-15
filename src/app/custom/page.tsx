@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function CustomPage() {
   const config = getCustomConfig();
   return (
-    <div className="container-px py-14">
+    <div className="container-px py-10 sm:py-14">
       <header className="max-w-2xl">
         <h1 className="font-serif text-3xl text-steel-50 sm:text-4xl">
           Design your knife
