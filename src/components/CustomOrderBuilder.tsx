@@ -5,11 +5,10 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { templates, getTemplate } from "@/data/templates";
 import type { CustomConfig } from "@/lib/content";
-import { submitInquiry } from "@/lib/submitInquiry";
 import { site } from "@/data/site";
 import { asset } from "@/lib/asset";
 
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sent";
 
 const BLADE_MIN_MM = 50;
 const BLADE_STEP_MM = 5;
@@ -59,10 +58,10 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
   const [selectedSlug, setSelectedSlug] = useState<string>(validInitial);
   const [sel, setSel] = useState<Selections>(() => defaultsFor(validInitial, config));
   const [status, setStatus] = useState<Status>("idle");
-  const [error, setError] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
+  const [waUrl, setWaUrl] = useState("");
 
-  const filesMb = files.reduce((n, f) => n + f.size, 0) / (1024 * 1024);
+  const waBase =
+    site.socials.whatsapp || `https://wa.me/${site.phoneHref.replace(/\D/g, "")}`;
 
   function pickTemplate(slug: string) {
     setSelectedSlug(slug);
@@ -86,39 +85,41 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
     [sel],
   );
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function buildWhatsAppUrl(name: string, notes: string) {
+    const lines = ["Hi Nicky, I'd like a quote for a custom knife:"];
+    for (const [k, v] of Object.entries(summary)) lines.push(`• ${k}: ${v}`);
+    if (name) lines.push("", `Name: ${name}`);
+    if (notes) lines.push(`Notes: ${notes}`);
+    lines.push("", "(I'll attach reference photos here in the chat.)");
+    return `${waBase}?text=${encodeURIComponent(lines.join("\n"))}`;
+  }
+
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.currentTarget;
-    const data = new FormData(form);
-    setStatus("sending");
-    setError("");
-
-    const result = await submitInquiry({
-      kind: "custom-order",
-      name: String(data.get("name") || ""),
-      email: String(data.get("email") || ""),
-      phone: String(data.get("phone") || ""),
-      message: String(data.get("message") || ""),
-      details: summary,
-      files,
-    });
-
-    if (result.ok) {
-      setStatus("sent");
-    } else {
-      setStatus("error");
-      setError(result.error);
-    }
+    const data = new FormData(e.currentTarget);
+    const url = buildWhatsAppUrl(
+      String(data.get("name") || ""),
+      String(data.get("message") || ""),
+    );
+    setWaUrl(url);
+    window.open(url, "_blank", "noopener,noreferrer");
+    setStatus("sent");
   }
 
   if (status === "sent") {
     return (
       <div className="card mx-auto max-w-xl p-8 text-center">
-        <h3 className="font-serif text-2xl text-forge-300">Request received</h3>
+        <h3 className="font-serif text-2xl text-forge-300">Opening WhatsApp…</h3>
         <p className="mt-3 text-steel-300">
-          Thanks — your custom knife request has been sent to Nicky. He&apos;ll be in
-          touch to confirm the details, timeline and price. For anything urgent,
-          call <a className="text-forge-300 hover:underline" href={`tel:${site.phoneHref}`}>{site.phone}</a>.
+          Your knife spec is ready in a WhatsApp message to Nicky — just press send
+          (and attach any reference photos in the chat). If WhatsApp didn&apos;t open,{" "}
+          <a className="text-forge-300 hover:underline" href={waUrl} target="_blank" rel="noopener noreferrer">
+            tap here
+          </a>{" "}
+          or call{" "}
+          <a className="text-forge-300 hover:underline" href={`tel:${site.phoneHref}`}>
+            {site.phone}
+          </a>.
         </p>
       </div>
     );
@@ -240,51 +241,24 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
           </div>
         </section>
 
-        {/* Step 3 — contact */}
+        {/* Step 3 — your details */}
         <section>
           <h2 className="font-serif text-xl text-steel-50">3. Your details</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4">
             <div>
               <label className="field-label" htmlFor="name">Name</label>
-              <input className="field-input" id="name" name="name" required autoComplete="name" />
+              <input className="field-input" id="name" name="name" autoComplete="name" />
             </div>
             <div>
-              <label className="field-label" htmlFor="phone">Phone</label>
-              <input className="field-input" id="phone" name="phone" inputMode="tel" autoComplete="tel" />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="field-label" htmlFor="email">Email</label>
-              <input className="field-input" id="email" name="email" type="email" autoComplete="email" />
-            </div>
-            <div className="sm:col-span-2">
               <label className="field-label" htmlFor="message">
                 Anything else? (engraving, deadline, budget…)
               </label>
               <textarea className="field-input min-h-[110px]" id="message" name="message" />
             </div>
-
-            <div className="sm:col-span-2">
-              <label className="field-label" htmlFor="photos">
-                Reference photos or sketches (optional)
-              </label>
-              <input
-                id="photos"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
-                className="block w-full text-sm text-steel-300 file:mr-3 file:rounded-md file:border-0 file:bg-steel-700 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-steel-100 hover:file:bg-steel-600"
-              />
-              {files.length > 0 && (
-                <p className={`mt-1 text-xs ${filesMb > 10 ? "text-red-400" : "text-steel-500"}`}>
-                  {files.length} photo{files.length > 1 ? "s" : ""} selected ({filesMb.toFixed(1)} MB
-                  {filesMb > 10 ? " — too large, keep under 10 MB" : " / 10 MB max"})
-                </p>
-              )}
-            </div>
           </div>
           <p className="mt-2 text-xs text-steel-500">
-            Provide an email or phone number so Nicky can reply with a quote.
+            Tapping the button opens WhatsApp with your spec ready to send — you can
+            add reference photos right in the chat.
           </p>
         </section>
       </div>
@@ -302,18 +276,9 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
             ))}
           </dl>
 
-          {status === "error" && (
-            <p className="mt-4 rounded-md border border-red-500/40 bg-red-950/40 px-3 py-2 text-sm text-red-300">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            className="btn-primary mt-5 w-full"
-            disabled={status === "sending" || filesMb > 10}
-          >
-            {status === "sending" ? "Sending…" : "Request a quote"}
+          <button type="submit" className="btn-primary mt-5 w-full">
+            <WhatsAppIcon />
+            Request a quote on WhatsApp
           </button>
           <p className="mt-3 text-center text-xs text-steel-500">
             No payment now — Nicky confirms details &amp; price first.
@@ -351,5 +316,13 @@ function SelectField({
       </select>
       {help && <p className="mt-1 text-xs text-steel-500">{help}</p>}
     </div>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 0 1 8.413 3.488 11.82 11.82 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.513 5.26l-.999 3.648 3.476-.91zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+    </svg>
   );
 }

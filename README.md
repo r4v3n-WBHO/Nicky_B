@@ -77,13 +77,16 @@ options (`src/data/templates.ts`).
 
 ---
 
-## Receiving enquiries & custom orders by email
+## Receiving enquiries & custom orders
 
-Because the site is static (no server), the contact form and custom-order
-builder send submissions via [FormSubmit](https://formsubmit.co) — a free
-service that emails you each submission and supports **file attachments**
-(reference photos on the custom-order form, up to 10 MB total). No backend or
-domain setup required.
+Two different paths:
+
+- **Custom-order builder ("Request a quote")** → opens **WhatsApp** to Nicky,
+  pre-filled with the chosen spec. The customer presses send (and can attach
+  reference photos in the chat). Uses the number in `src/data/site.ts` — works
+  immediately, no setup. *(No email/record is captured unless they hit send.)*
+- **Contact form** → emailed via [FormSubmit](https://formsubmit.co), a free
+  service (no backend needed). Configure it as below.
 
 **Until this is configured, the forms show a "please call" message instead of
 sending.** To turn it on:
