@@ -54,14 +54,19 @@ GitHub Actions, so the live site updates a minute or two later.
 | **Categories** | Add/rename/reorder the categories that knives can be filed under (these become the store's filter buttons) |
 | **Next event** | Update the home-page banner (title, date, location, blurb, button) or switch it off |
 | **About Nicky** | The "why I make knives" section on the contact page — heading, photo of Nicky, and his story |
+| **Custom order options** | The blade-shape, steel, handle-material and sheath choices in the custom-order builder, plus the max blade length |
 
-Photos uploaded in the CMS are stored in `public/images/uploads/` and shown
-**as-is** in tidy, uniform cards — so any clear phone photo looks good (no
-special backdrop or editing needed).
+Photos uploaded in the CMS are stored in `public/images/uploads/`, and the
+deploy build **automatically removes the background** (via
+`scripts/process-images.mjs`, run as a `prebuild` step) so knives appear "cut
+out" / floating on the site. The transparent versions are written to
+`public/images/processed/`. (Nicky's About photo is left as-is — only knife
+photos are cut out.)
 
-> **Tip for nice photos:** good light and filling the frame with the knife make
-> the biggest difference. Landscape (knife lying horizontally) crops best in the
-> card grid; the full photo is always shown on the knife's own page.
+> **Tip for clean cut-outs:** background removal works best when the knife is
+> photographed on a plain, uncluttered surface in good light. Busy backgrounds
+> (wood grain, patterned cloth) may not separate perfectly. If a cut-out ever
+> looks wrong, the build safely falls back to showing the original photo.
 
 ### Editing content by hand (optional)
 Everything the CMS edits is just files in the **`content/`** folder
@@ -136,11 +141,15 @@ content/                # ⬅ CMS-managed content (edited via Pages CMS)
   gallery/             #    past-work pieces
   categories/          #    category list
   event.json           #    next-event banner
+  about.json           #    "about Nicky" section
+  custom.json          #    custom-order builder options
 public/
-  images/uploads/      # photos (uploaded via the CMS)
+  images/uploads/      # photos uploaded via the CMS (originals)
+  images/processed/    # auto background-removed versions (generated at build)
   nicky_b_logo_white.png  # white logo used in the header
   nicky_b_logo.jpg     # original logo (source for `npm run logo-white`)
 scripts/
+  process-images.mjs   # prebuild: removes photo backgrounds
   logo-white.mjs       # `npm run logo-white` — regenerate the white logo
 .pages.yml              # Pages CMS configuration (defines the editor)
 ```

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import CustomOrderBuilder from "@/components/CustomOrderBuilder";
+import { getCustomConfig } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Custom Order",
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function CustomPage() {
+  const config = getCustomConfig();
   return (
     <div className="container-px py-14">
       <header className="max-w-2xl">
@@ -24,7 +26,7 @@ export default function CustomPage() {
 
       <div className="mt-10">
         <Suspense fallback={<p className="text-steel-400">Loading…</p>}>
-          <CustomOrderBuilder />
+          <CustomOrderBuilder config={config} />
         </Suspense>
       </div>
     </div>

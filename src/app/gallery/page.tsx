@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import ZoomImage from "@/components/ZoomImage";
 import { getGallery } from "@/lib/content";
 import { asset } from "@/lib/asset";
 
@@ -29,12 +29,10 @@ export default function GalleryPage() {
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {gallery.map((item) => (
             <figure key={item.slug} className="card overflow-hidden">
-              <div className="relative aspect-[4/3] bg-steel-800">
-                <Image
+              <div className="relative aspect-[4/3] bg-gradient-to-b from-steel-800 to-steel-950">
+                <ZoomImage
                   src={asset(item.image)}
                   alt={item.title}
-                  fill
-                  className="object-cover"
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 />
               </div>

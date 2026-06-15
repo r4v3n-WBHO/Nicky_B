@@ -10,6 +10,17 @@ import matter from "gray-matter";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
+/**
+ * Knife photos are shown with their background removed. The `prebuild` step
+ * (scripts/process-images.mjs) writes a transparent PNG for every uploaded
+ * photo to /images/processed; this maps an uploaded path to that version.
+ * Non-upload paths (or anything already processed) are returned unchanged.
+ */
+function cutOut(src: string): string {
+  const m = src.match(/^\/images\/uploads\/(.+)\.(jpe?g|png|webp)$/i);
+  return m ? `/images/processed/${m[1]}.png` : src;
+}
+
 export type ProductSpec = { label: string; value: string };
 
 export type Product = {
@@ -91,7 +102,7 @@ export function getProducts(): Product[] {
       description: data.description ? String(data.description) : undefined,
       inStock: data.inStock !== false,
       order: Number(data.order ?? 0),
-      images: Array.isArray(data.images) ? (data.images as string[]) : [],
+      images: Array.isArray(data.images) ? (data.images as string[]).map(cutOut) : [],
       specs: Array.isArray(data.specs) ? (data.specs as ProductSpec[]) : [],
     }))
     .sort((a, b) => byOrderThen("name")(a, b));
@@ -106,7 +117,7 @@ export function getGallery(): GalleryItem[] {
     .map(({ slug, data }) => ({
       slug,
       title: String(data.title ?? slug),
-      image: String(data.image ?? ""),
+      image: cutOut(String(data.image ?? "")),
       caption: data.caption ? String(data.caption) : undefined,
       order: Number(data.order ?? 0),
     }))
@@ -142,4 +153,33 @@ export type About = {
 
 export function getAbout(): About {
   return readJson<About>("about.json", { heading: "About", image: "", body: "" });
+}
+
+export type CustomConfig = {
+  bladeShapes: string[];
+  steels: string[];
+  handleMaterials: string[];
+  sheaths: string[];
+  bladeLengthMaxMm: number;
+};
+
+const CUSTOM_DEFAULTS: CustomConfig = {
+  bladeShapes: ["Drop point", "Clip point", "Scandi grind", "Not sure / Nicky's recommendation"],
+  steels: ["N690 stainless", "5160 carbon", "Not sure / Nicky's recommendation"],
+  handleMaterials: ["Stabilised hardwood", "Micarta", "Not sure / Nicky's recommendation"],
+  sheaths: ["Hand-stitched leather", "Kydex", "No sheath"],
+  bladeLengthMaxMm: 500,
+};
+
+export function getCustomConfig(): CustomConfig {
+  const d = readJson<Partial<CustomConfig>>("custom.json", {});
+  const list = (v: unknown, fallback: string[]) =>
+    Array.isArray(v) && v.length ? (v as string[]) : fallback;
+  return {
+    bladeShapes: list(d.bladeShapes, CUSTOM_DEFAULTS.bladeShapes),
+    steels: list(d.steels, CUSTOM_DEFAULTS.steels),
+    handleMaterials: list(d.handleMaterials, CUSTOM_DEFAULTS.handleMaterials),
+    sheaths: list(d.sheaths, CUSTOM_DEFAULTS.sheaths),
+    bladeLengthMaxMm: Number(d.bladeLengthMaxMm) || CUSTOM_DEFAULTS.bladeLengthMaxMm,
+  };
 }

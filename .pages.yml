@@ -97,3 +97,15 @@ content:
       - { name: heading, label: Heading, type: string }
       - { name: image, label: Photo of Nicky, type: image }
       - { name: body, label: Your story / why you make knives, type: text }
+
+  - name: custom
+    label: Custom order options
+    type: file
+    path: content/custom.json
+    format: json
+    fields:
+      - { name: bladeShapes, label: Blade shapes, type: string, list: true }
+      - { name: steels, label: Steel options, type: string, list: true }
+      - { name: handleMaterials, label: Handle materials, type: string, list: true }
+      - { name: sheaths, label: Sheath options, type: string, list: true }
+      - { name: bladeLengthMaxMm, label: Max blade length (mm), type: number, default: 500 }

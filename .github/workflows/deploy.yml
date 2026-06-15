@@ -34,6 +34,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Persist background-removed images between builds so CMS-uploaded photos
+      # aren't re-processed on every deploy (only new/changed photos are).
+      - name: Cache processed images
+        uses: actions/cache@v4
+        with:
+          path: public/images/processed
+          key: processed-images-${{ hashFiles('public/images/uploads/**') }}
+          restore-keys: |
+            processed-images-
+
       - name: Build (static export)
         env:
           # Serves the site under https://<user>.github.io/<repo>/ — set

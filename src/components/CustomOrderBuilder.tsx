@@ -3,17 +3,24 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import {
-  templates,
-  customOptions,
-  bladeLengthRange,
-  getTemplate,
-} from "@/data/templates";
+import { templates, getTemplate } from "@/data/templates";
+import type { CustomConfig } from "@/lib/content";
 import { submitInquiry } from "@/lib/submitInquiry";
 import { site } from "@/data/site";
 import { asset } from "@/lib/asset";
 
 type Status = "idle" | "sending" | "sent" | "error";
+
+const BLADE_MIN_MM = 50;
+const BLADE_STEP_MM = 5;
+
+// Labels/help for the option dropdowns — the choices come from the CMS config.
+const OPTION_META = {
+  bladeShape: { label: "Blade shape", help: "The overall profile of the blade." },
+  steel: { label: "Steel", help: "Stainless resists rust; carbon steels take a very keen edge." },
+  handleMaterial: { label: "Handle material", help: undefined as string | undefined },
+  sheath: { label: "Sheath", help: undefined as string | undefined },
+};
 
 type Selections = {
   templateName: string;
@@ -27,20 +34,22 @@ type Selections = {
 
 const SCRATCH = "scratch";
 
-function defaultsFor(slug: string): Selections {
+function defaultsFor(slug: string, config: CustomConfig): Selections {
   const t = slug === SCRATCH ? undefined : getTemplate(slug);
+  const pick = (val: string | undefined, list: string[]) =>
+    val && list.includes(val) ? val : list[0];
   return {
     templateName: t ? t.name : "Custom (from scratch)",
-    bladeShape: t?.defaults.bladeShape ?? customOptions.bladeShape.choices[0],
-    steel: t?.defaults.steel ?? customOptions.steel.choices[0],
-    handleMaterial: t?.defaults.handleMaterial ?? customOptions.handleMaterial.choices[0],
-    sheath: customOptions.sheath.choices[0],
-    bladeLengthMm: t?.defaults.bladeLengthMm ?? bladeLengthRange.default,
+    bladeShape: pick(t?.defaults.bladeShape, config.bladeShapes),
+    steel: pick(t?.defaults.steel, config.steels),
+    handleMaterial: pick(t?.defaults.handleMaterial, config.handleMaterials),
+    sheath: config.sheaths[0],
+    bladeLengthMm: Math.min(t?.defaults.bladeLengthMm ?? 110, config.bladeLengthMaxMm),
     quantity: 1,
   };
 }
 
-export default function CustomOrderBuilder() {
+export default function CustomOrderBuilder({ config }: { config: CustomConfig }) {
   const initialTemplateSlug = useSearchParams().get("template") ?? undefined;
   const validInitial =
     initialTemplateSlug && getTemplate(initialTemplateSlug)
@@ -48,13 +57,13 @@ export default function CustomOrderBuilder() {
       : SCRATCH;
 
   const [selectedSlug, setSelectedSlug] = useState<string>(validInitial);
-  const [sel, setSel] = useState<Selections>(() => defaultsFor(validInitial));
+  const [sel, setSel] = useState<Selections>(() => defaultsFor(validInitial, config));
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
 
   function pickTemplate(slug: string) {
     setSelectedSlug(slug);
-    setSel(defaultsFor(slug));
+    setSel(defaultsFor(slug, config));
   }
 
   function update<K extends keyof Selections>(key: K, value: Selections[K]) {
@@ -135,8 +144,8 @@ export default function CustomOrderBuilder() {
                     : "hover:border-steel-600"
                 }`}
               >
-                <div className="relative h-16 w-20 flex-none overflow-hidden rounded bg-steel-800">
-                  <Image src={asset(t.image)} alt={t.name} fill className="object-cover" sizes="80px" />
+                <div className="relative h-16 w-20 flex-none overflow-hidden rounded bg-gradient-to-b from-steel-800 to-steel-950">
+                  <Image src={asset(t.image)} alt={t.name} fill className="object-contain p-1" sizes="80px" />
                 </div>
                 <div>
                   <div className="font-medium text-steel-100">{t.name}</div>
@@ -166,29 +175,29 @@ export default function CustomOrderBuilder() {
           <h2 className="font-serif text-xl text-steel-50">2. Customise it</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <SelectField
-              label={customOptions.bladeShape.label}
-              help={customOptions.bladeShape.help}
+              label={OPTION_META.bladeShape.label}
+              help={OPTION_META.bladeShape.help}
               value={sel.bladeShape}
-              choices={customOptions.bladeShape.choices}
+              choices={config.bladeShapes}
               onChange={(v) => update("bladeShape", v)}
             />
             <SelectField
-              label={customOptions.steel.label}
-              help={customOptions.steel.help}
+              label={OPTION_META.steel.label}
+              help={OPTION_META.steel.help}
               value={sel.steel}
-              choices={customOptions.steel.choices}
+              choices={config.steels}
               onChange={(v) => update("steel", v)}
             />
             <SelectField
-              label={customOptions.handleMaterial.label}
+              label={OPTION_META.handleMaterial.label}
               value={sel.handleMaterial}
-              choices={customOptions.handleMaterial.choices}
+              choices={config.handleMaterials}
               onChange={(v) => update("handleMaterial", v)}
             />
             <SelectField
-              label={customOptions.sheath.label}
+              label={OPTION_META.sheath.label}
               value={sel.sheath}
-              choices={customOptions.sheath.choices}
+              choices={config.sheaths}
               onChange={(v) => update("sheath", v)}
             />
           </div>
@@ -200,16 +209,16 @@ export default function CustomOrderBuilder() {
             <input
               id="bladeLength"
               type="range"
-              min={bladeLengthRange.min}
-              max={bladeLengthRange.max}
-              step={bladeLengthRange.step}
+              min={BLADE_MIN_MM}
+              max={config.bladeLengthMaxMm}
+              step={BLADE_STEP_MM}
               value={sel.bladeLengthMm}
               onChange={(e) => update("bladeLengthMm", Number(e.target.value))}
               className="w-full accent-forge-500"
             />
             <div className="flex justify-between text-xs text-steel-500">
-              <span>{bladeLengthRange.min} mm</span>
-              <span>{bladeLengthRange.max} mm</span>
+              <span>{BLADE_MIN_MM} mm</span>
+              <span>{config.bladeLengthMaxMm} mm</span>
             </div>
           </div>
 
@@ -245,13 +254,29 @@ export default function CustomOrderBuilder() {
             </div>
             <div className="sm:col-span-2">
               <label className="field-label" htmlFor="message">
-                Anything else? (engraving, deadline, reference photos, budget…)
+                Anything else? (engraving, deadline, budget…)
               </label>
               <textarea className="field-input min-h-[110px]" id="message" name="message" />
             </div>
           </div>
           <p className="mt-2 text-xs text-steel-500">
-            Provide an email or phone number so Nicky can reply with a quote.
+            Provide an email or phone number so Nicky can reply with a quote. Got
+            reference photos or sketches?{" "}
+            {site.socials.whatsapp ? (
+              <>
+                <a
+                  href={site.socials.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-forge-300 hover:underline"
+                >
+                  WhatsApp them to Nicky
+                </a>{" "}
+                after submitting (mention your name).
+              </>
+            ) : (
+              <>Send them to Nicky on {site.phone} after submitting.</>
+            )}
           </p>
         </section>
       </div>

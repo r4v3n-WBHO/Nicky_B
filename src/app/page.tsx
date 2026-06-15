@@ -38,14 +38,14 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-steel-800 bg-steel-900">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-steel-800 bg-gradient-to-br from-steel-800 to-steel-950">
             {heroImage && (
               <Image
                 src={asset(heroImage)}
                 alt="A hand-forged knife by Nicky Badenhorst"
                 fill
                 priority
-                className="object-cover"
+                className="object-contain p-6 drop-shadow-2xl"
                 sizes="(min-width: 1024px) 50vw, 100vw"
               />
             )}
@@ -107,12 +107,12 @@ export default function HomePage() {
           <div className="mt-6 grid gap-6 sm:grid-cols-3">
             {recentWork.map((item) => (
               <div key={item.slug} className="card overflow-hidden">
-                <div className="relative aspect-[4/3] bg-steel-800">
+                <div className="relative aspect-[4/3] bg-gradient-to-b from-steel-800 to-steel-950">
                   <Image
                     src={asset(item.image)}
                     alt={item.title}
                     fill
-                    className="object-cover"
+                    className="object-contain p-4 drop-shadow-xl"
                     sizes="(min-width: 640px) 33vw, 100vw"
                   />
                 </div>

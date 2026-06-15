@@ -1,0 +1,32 @@
+{
+  "bladeShapes": [
+    "Drop point",
+    "Clip point",
+    "Scandi grind",
+    "Chef profile",
+    "Tanto",
+    "Skinner",
+    "Not sure / Nicky's recommendation"
+  ],
+  "steels": [
+    "N690 stainless",
+    "5160 carbon",
+    "Damascus (pattern-welded)",
+    "Not sure / Nicky's recommendation"
+  ],
+  "handleMaterials": [
+    "Stabilised hardwood",
+    "Stabilised burl",
+    "Buffalo horn",
+    "Micarta",
+    "G10",
+    "Not sure / Nicky's recommendation"
+  ],
+  "sheaths": [
+    "Hand-stitched leather",
+    "Kydex",
+    "No sheath",
+    "Not sure / Nicky's recommendation"
+  ],
+  "bladeLengthMaxMm": 500
+}
