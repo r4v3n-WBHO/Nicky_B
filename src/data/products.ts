@@ -11,8 +11,8 @@ import type { Product } from "@/lib/types";
  *     (lowercase-with-hyphens), and point `images` at your file.
  *  3. Set `inStock: false` once it sells (keeps it visible as "Sold").
  *
- * Prices are in South African Rand (ZAR), whole numbers.
- * NOTE: prices/specs below are best-guess placeholders — confirm with Nicky.
+ * Prices are NOT shown on the site — buyers enquire for a price. The specs
+ * below are best-guess placeholders; update them with Nicky's real details.
  */
 export const products: Product[] = [
   {
@@ -21,7 +21,6 @@ export const products: Product[] = [
     tagline: "Mirror-polished drop point with a sheep-horn handle.",
     description:
       "A classic drop-point hunter with a mirror-finished blade and a striking sheep-horn handle set off by a hardwood spacer and polished bolster. Comes with a fitted leather sheath. A real eye-catcher that still earns its keep in the field.",
-    priceZar: 2200,
     inStock: true,
     images: ["/images/knives/hunter-horn.png"],
     category: "Hunting",
@@ -39,7 +38,6 @@ export const products: Product[] = [
     tagline: "A hand-made kitchen knife with a hardwood handle.",
     description:
       "A lightweight, sharp kitchen knife with a long, thin blade and a comfortable hardwood handle. Balanced for everyday prep and supplied with a leather blade-guard. Equally at home in the kitchen or the camp.",
-    priceZar: 1650,
     inStock: true,
     images: ["/images/knives/kitchen-chef.png"],
     category: "Kitchen",
@@ -57,7 +55,6 @@ export const products: Product[] = [
     tagline: "Hammer-finished forged blade with a brass guard.",
     description:
       "A hand-forged bowie with a rugged hammered finish, a solid brass guard and a figured hardwood handle. A proper using-and-collecting knife with real presence, paired with a press-stud leather sheath.",
-    priceZar: 2950,
     inStock: true,
     images: ["/images/knives/bowie-forged.png"],
     category: "Bowie",
@@ -76,7 +73,6 @@ export const products: Product[] = [
     tagline: "Compact skinner with a bold layered-G10 handle.",
     description:
       "A small, sharp skinner with a hard-wearing red, black and grey layered-G10 handle — tough, grippy and weatherproof. Carried in a horizontal cross-draw leather sheath. A neat everyday companion.",
-    priceZar: 1750,
     inStock: true,
     images: ["/images/knives/edc-red-g10.png"],
     category: "Skinner",

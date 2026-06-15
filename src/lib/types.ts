@@ -6,8 +6,7 @@ export type Product = {
   tagline: string;
   /** Longer description shown on the product page */
   description: string;
-  priceZar: number;
-  /** Whether the piece is currently available to buy */
+  /** Whether the piece is currently available (prices are enquiry-only) */
   inStock: boolean;
   /** Image paths relative to /public, first is the primary/cover image */
   images: string[];

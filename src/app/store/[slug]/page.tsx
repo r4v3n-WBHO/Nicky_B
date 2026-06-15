@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { products, getProduct } from "@/data/products";
-import { formatZar } from "@/lib/format";
 import { asset } from "@/lib/asset";
 
 export function generateStaticParams() {
@@ -20,9 +19,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const product = getProduct(params.slug);
   if (!product) notFound();
 
-  const enquiry = `Hi Nicky, I'm interested in the "${product.name}" (${formatZar(
-    product.priceZar,
-  )}). Is it still available?`;
+  const enquiry = `Hi Nicky, I'm interested in the "${product.name}". Is it still available, and what's the price?`;
 
   return (
     <div className="container-px py-14">
@@ -68,8 +65,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           )}
           <h1 className="mt-3 font-serif text-3xl text-steel-50">{product.name}</h1>
           <p className="mt-2 text-lg text-steel-300">{product.tagline}</p>
-          <p className="mt-4 text-2xl font-semibold text-forge-300">
-            {formatZar(product.priceZar)}
+          <p className="mt-4 text-lg font-medium text-forge-300">
+            {product.inStock ? "Enquire for price" : "Sold"}
           </p>
 
           <p className="mt-6 text-steel-300">{product.description}</p>

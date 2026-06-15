@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Product } from "@/lib/types";
-import { formatZar } from "@/lib/format";
 import { asset } from "@/lib/asset";
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -33,7 +32,9 @@ export default function ProductCard({ product }: { product: Product }) {
         <h3 className="font-serif text-lg text-steel-50">{product.name}</h3>
         <p className="mt-1 line-clamp-2 text-sm text-steel-400">{product.tagline}</p>
         <div className="mt-3 flex items-center justify-between">
-          <span className="font-semibold text-forge-300">{formatZar(product.priceZar)}</span>
+          <span className="text-sm font-medium text-forge-300">
+            {product.inStock ? "Enquire for price" : "Sold"}
+          </span>
           <span className="text-sm text-steel-400 group-hover:text-forge-300">
             View &rarr;
           </span>
