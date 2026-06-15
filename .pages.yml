@@ -1,0 +1,89 @@
+# Pages CMS configuration — https://pagescms.org
+# This file tells the CMS what Nicky can edit. Sign in at https://app.pagescms.org
+# with GitHub, open this repo, and you'll get a friendly editor for everything
+# below. Saving commits to the repo, which auto-deploys via GitHub Actions.
+
+media:
+  input: public/images/uploads      # where uploaded photos are stored in the repo
+  output: /images/uploads           # the path written into content
+  extensions: [png, jpg, jpeg, webp]
+  categories: [image]
+
+content:
+  - name: products
+    label: Knives for sale (Store)
+    type: collection
+    path: content/products
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      primary: name
+      sort: [order, name]
+      fields: [name, category, inStock]
+    fields:
+      - { name: name, label: Name, type: string, required: true }
+      - name: category
+        label: Category
+        type: reference
+        options:
+          collection: categories
+          value: "{primary}"
+          label: "{primary}"
+          search: name
+      - { name: tagline, label: Short tagline (one line), type: string }
+      - { name: description, label: Description, type: text }
+      - { name: inStock, label: In stock?, type: boolean, default: true }
+      - { name: order, label: "Sort order (lower shows first)", type: number, default: 0 }
+      - { name: images, label: Photos, type: image, list: true }
+      - name: specs
+        label: Specifications
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Label, type: string }
+          - { name: value, label: Value, type: string }
+
+  - name: gallery
+    label: Gallery (past work)
+    type: collection
+    path: content/gallery
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      primary: title
+      sort: [order, title]
+      fields: [title]
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: image, label: Photo, type: image }
+      - { name: caption, label: Caption, type: text }
+      - { name: order, label: "Sort order (lower shows first)", type: number, default: 0 }
+
+  - name: categories
+    label: Categories
+    type: collection
+    path: content/categories
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      primary: name
+      sort: [order, name]
+      fields: [name, order]
+    fields:
+      - { name: name, label: Category name, type: string, required: true }
+      - { name: order, label: "Sort order (lower shows first)", type: number, default: 0 }
+
+  - name: event
+    label: Next event (home banner)
+    type: file
+    path: content/event.json
+    format: json
+    fields:
+      - { name: active, label: Show the banner?, type: boolean, default: true }
+      - { name: kicker, label: Small label, type: string, default: "Next event" }
+      - { name: title, label: Title, type: string }
+      - { name: date, label: Date, type: string }
+      - { name: location, label: Location, type: string }
+      - { name: blurb, label: Extra detail (optional), type: text }
+      - { name: linkLabel, label: Button label (optional), type: string }
+      - { name: linkHref, label: Button link (optional), type: string }

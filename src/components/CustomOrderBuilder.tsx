@@ -135,8 +135,8 @@ export default function CustomOrderBuilder() {
                     : "hover:border-steel-600"
                 }`}
               >
-                <div className="relative h-16 w-20 flex-none overflow-hidden rounded bg-gradient-to-b from-steel-800 to-steel-950">
-                  <Image src={asset(t.image)} alt={t.name} fill className="object-contain p-1" sizes="80px" />
+                <div className="relative h-16 w-20 flex-none overflow-hidden rounded bg-steel-800">
+                  <Image src={asset(t.image)} alt={t.name} fill className="object-cover" sizes="80px" />
                 </div>
                 <div>
                   <div className="font-medium text-steel-100">{t.name}</div>

@@ -6,8 +6,9 @@ request a quote.
 
 Built with **Next.js 14**, **TypeScript** and **Tailwind CSS**, exported as a
 **static site** and hosted free on **GitHub Pages** (deployed automatically by
-GitHub Actions on every push). No database — all content lives in editable
-files in the repo, and orders/enquiries are emailed to Nicky via Web3Forms.
+GitHub Actions on every push). No database — content is managed through a
+friendly CMS (**Pages CMS**) that saves to this repo, and orders/enquiries are
+emailed to Nicky via Web3Forms.
 
 ---
 
@@ -31,48 +32,42 @@ npx serve out        # preview at http://localhost:3000
 
 ---
 
-## Editing the content (no coding required)
+## Managing content — the CMS (for Nicky, no coding)
 
-All content lives in `src/data/`. Edit the file, save, and the site updates
-(after a redeploy, or instantly in `npm run dev`).
+Day-to-day content (knives, photos, categories, the next-event banner) is
+managed through **[Pages CMS](https://pagescms.org)** — a free, friendly editor
+that saves changes straight into this GitHub repo. Every save auto-publishes via
+GitHub Actions, so the live site updates a minute or two later.
 
-| What you want to change | File |
+**One-time setup**
+1. Make sure Nicky has a (free) **GitHub account** and that it has access to this
+   repo (he's the owner, or add him under **Settings → Collaborators**).
+2. Go to **<https://app.pagescms.org>** and **sign in with GitHub**.
+3. Authorise it for the `Nicky_B` repository. That's it — the editor is defined
+   by the `.pages.yml` file in this repo.
+
+**What Nicky can do in the CMS**
+| Section | What it does |
 | --- | --- |
-| Phone, name, location, social links | `src/data/site.ts` |
-| Knives **for sale** (the Store) | `src/data/products.ts` |
-| Gallery of **past work** (The Work) | `src/data/gallery.ts` |
-| Custom-order templates & options | `src/data/templates.ts` |
-| **Next event** news banner (home page) | `src/data/news.ts` |
+| **Knives for sale (Store)** | Add/edit/remove knives: name, category, tagline, description, photos, in-stock toggle, specs, order |
+| **Gallery (past work)** | Add/edit showcase pieces with a photo + caption |
+| **Categories** | Add/rename/reorder the categories that knives can be filed under (these become the store's filter buttons) |
+| **Next event** | Update the home-page banner (title, date, location, blurb, button) or switch it off |
 
-### Photos & background removal
-The site shows knives as transparent PNGs "floating" on a dark background.
+Photos uploaded in the CMS are stored in `public/images/uploads/` and shown
+**as-is** in tidy, uniform cards — so any clear phone photo looks good (no
+special backdrop or editing needed).
 
-1. Put the original photo(s) in the **`source-photos/`** folder (this folder is
-   kept out of `public/` so the large originals aren't published).
-2. Run `npm run bg-remove`. This removes the background and writes a transparent
-   PNG to `public/images/knives/`.
-3. Reference the result in the data files as `/images/knives/<name>.png`.
+> **Tip for nice photos:** good light and filling the frame with the knife make
+> the biggest difference. Landscape (knife lying horizontally) crops best in the
+> card grid; the full photo is always shown on the knife's own page.
 
-> **Photo tip:** background removal works *far* better when the knife is shot on
-> a plain, uncluttered surface (a dark cloth or a sheet of paper). Photos taken
-> on wood, driftwood or patterned mats often don't cut out cleanly. A few of
-> Nicky's originals (the karambits and a couple of skinners) need re-shooting on
-> a plain backdrop before they'll look good — they're left out for now.
-
-You can also skip the tool and just drop a ready-made image straight into
-`public/images/` and reference it as `/images/yourfile.png`.
-
-### Adding a knife to the store
-Open `src/data/products.ts`, copy an existing block, and change the details.
-- Give each knife a unique `slug` (lowercase-with-hyphens).
-- Set `inStock: false` once it sells (it stays visible as "Sold").
-
-### Adding a gallery piece
-Same idea, in `src/data/gallery.ts`.
-
-### Updating the "Next event" banner
-Edit `src/data/news.ts` before each show (title, date, location). Set
-`active: false` to hide the banner when there's no upcoming event.
+### Editing content by hand (optional)
+Everything the CMS edits is just files in the **`content/`** folder
+(`content/products`, `content/gallery`, `content/categories`, `content/event.json`),
+so you can also edit them directly and `git push`. The few things not in the CMS
+live in code: contact details (`src/data/site.ts`) and the custom-order builder
+options (`src/data/templates.ts`).
 
 ---
 
@@ -132,15 +127,21 @@ src/
     store/             # store list + [slug] product pages
     custom/            # custom-order builder
     contact/           # contact page
-  components/           # Header, Footer, ProductCard, EventBanner, forms, builder
-  data/                # ⬅ edit these to change content
-  lib/                 # types & helpers
+  components/           # Header, Footer, ProductCard, StoreBrowser, EventBanner, forms, builder
+  data/                # site/contact details + custom-order builder options
+  lib/                 # content loader (reads /content) + helpers
+content/                # ⬅ CMS-managed content (edited via Pages CMS)
+  products/            #    knives for sale (one .md per knife)
+  gallery/             #    past-work pieces
+  categories/          #    category list
+  event.json           #    next-event banner
 public/
-  images/knives/       # transparent knife PNGs (shown on the site)
-  nicky_b_logo.jpg     # logo
+  images/uploads/      # photos (uploaded via the CMS)
+  nicky_b_logo_white.png  # white logo used in the header
+  nicky_b_logo.jpg     # original logo (source for `npm run logo-white`)
 scripts/
-  remove-bg.mjs        # `npm run bg-remove` — background removal
-source-photos/         # original photos (NOT published; source for bg-remove)
+  logo-white.mjs       # `npm run logo-white` — regenerate the white logo
+.pages.yml              # Pages CMS configuration (defines the editor)
 ```
 
 ---
@@ -148,10 +149,11 @@ source-photos/         # original photos (NOT published; source for bg-remove)
 ## Notes & next steps
 
 - **Payments:** intentionally not included — the store and custom orders are
-  enquiry/quote based. A SA gateway (PayFast / Yoco) can be added later if Nicky
-  wants real online checkout.
-- **Real photos** will make the biggest difference — swap the placeholders as
-  soon as they're available.
+  enquiry/quote based. Nicky already takes card payments in person via Yoco; a
+  SA online gateway (Yoco / PayFast) can be added later if he wants checkout.
+- **Specs & prices:** specs on the seeded knives are best-guess placeholders
+  (prices aren't shown — buyers enquire). Nicky can correct the specs in the CMS.
+- **Categories:** seeded with Hunting / Skinner / Kitchen / Bowie — Nicky can
+  change these in the CMS to match how he likes to group his work.
 - Confirm Nicky's **email address** and any **social links**, then add them to
-  `src/data/site.ts`.
-```
+  `src/data/site.ts` (these aren't in the CMS yet).

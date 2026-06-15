@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { gallery } from "@/data/gallery";
+import { getGallery } from "@/lib/content";
 import { asset } from "@/lib/asset";
 
 export const metadata: Metadata = {
@@ -10,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default function GalleryPage() {
+  const gallery = getGallery();
+
   return (
     <div className="container-px py-14">
       <header className="max-w-2xl">
@@ -23,28 +25,31 @@ export default function GalleryPage() {
         </p>
       </header>
 
-      <div className="mt-10 columns-1 gap-6 sm:columns-2 lg:columns-3 [&>*]:mb-6">
-        {gallery.map((item) => (
-          <figure key={item.slug} className="card break-inside-avoid overflow-hidden">
-            <div className="relative aspect-[4/3] bg-gradient-to-b from-steel-800 to-steel-950">
-              <Image
-                src={asset(item.image)}
-                alt={item.title}
-                fill
-                className="object-contain p-4 drop-shadow-xl"
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              />
-            </div>
-            <figcaption className="p-4">
-              <div className="flex items-baseline justify-between gap-2">
-                <h2 className="font-serif text-lg text-steel-50">{item.title}</h2>
-                {item.year && <span className="text-xs text-steel-500">{item.year}</span>}
+      {gallery.length > 0 ? (
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {gallery.map((item) => (
+            <figure key={item.slug} className="card overflow-hidden">
+              <div className="relative aspect-[4/3] bg-steel-800">
+                <Image
+                  src={asset(item.image)}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                />
               </div>
-              <p className="mt-1 text-sm text-steel-400">{item.caption}</p>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+              <figcaption className="p-4">
+                <h2 className="font-serif text-lg text-steel-50">{item.title}</h2>
+                {item.caption && (
+                  <p className="mt-1 text-sm text-steel-400">{item.caption}</p>
+                )}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-10 text-steel-400">Gallery pieces are coming soon.</p>
+      )}
     </div>
   );
 }

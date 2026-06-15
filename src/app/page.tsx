@@ -2,14 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import EventBanner from "@/components/EventBanner";
-import { products } from "@/data/products";
-import { gallery } from "@/data/gallery";
+import { getProducts, getGallery } from "@/lib/content";
 import { site } from "@/data/site";
 import { asset } from "@/lib/asset";
 
 export default function HomePage() {
-  const featured = products.filter((p) => p.inStock).slice(0, 3);
-  const recentWork = gallery.slice(0, 3);
+  const featured = getProducts().filter((p) => p.inStock).slice(0, 3);
+  const recentWork = getGallery().slice(0, 3);
+  const heroImage = featured[0]?.images[0] ?? recentWork[0]?.image;
 
   return (
     <>
@@ -38,15 +38,17 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-steel-800 bg-gradient-to-br from-steel-800 to-steel-950">
-            <Image
-              src={asset("/images/knives/bowie-forged.png")}
-              alt="A hand-forged bowie knife by Nicky Badenhorst"
-              fill
-              priority
-              className="object-contain p-6 drop-shadow-2xl"
-              sizes="(min-width: 1024px) 50vw, 100vw"
-            />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-steel-800 bg-steel-900">
+            {heroImage && (
+              <Image
+                src={asset(heroImage)}
+                alt="A hand-forged knife by Nicky Badenhorst"
+                fill
+                priority
+                className="object-cover"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+              />
+            )}
           </div>
         </div>
       </section>
@@ -94,33 +96,35 @@ export default function HomePage() {
       )}
 
       {/* Recent work */}
-      <section className="container-px py-12">
-        <div className="flex items-end justify-between">
-          <h2 className="font-serif text-2xl text-steel-50">Recent work</h2>
-          <Link href="/gallery" className="text-sm text-forge-300 hover:underline">
-            See the gallery &rarr;
-          </Link>
-        </div>
-        <div className="mt-6 grid gap-6 sm:grid-cols-3">
-          {recentWork.map((item) => (
-            <div key={item.slug} className="card overflow-hidden">
-              <div className="relative aspect-[4/3] bg-gradient-to-b from-steel-800 to-steel-950">
-                <Image
-                  src={asset(item.image)}
-                  alt={item.title}
-                  fill
-                  className="object-contain p-4 drop-shadow-xl"
-                  sizes="(min-width: 640px) 33vw, 100vw"
-                />
+      {recentWork.length > 0 && (
+        <section className="container-px py-12">
+          <div className="flex items-end justify-between">
+            <h2 className="font-serif text-2xl text-steel-50">Recent work</h2>
+            <Link href="/gallery" className="text-sm text-forge-300 hover:underline">
+              See the gallery &rarr;
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-6 sm:grid-cols-3">
+            {recentWork.map((item) => (
+              <div key={item.slug} className="card overflow-hidden">
+                <div className="relative aspect-[4/3] bg-steel-800">
+                  <Image
+                    src={asset(item.image)}
+                    alt={item.title}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 640px) 33vw, 100vw"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-serif text-steel-50">{item.title}</h3>
+                  {item.caption && <p className="mt-1 text-sm text-steel-400">{item.caption}</p>}
+                </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-serif text-steel-50">{item.title}</h3>
-                <p className="mt-1 text-sm text-steel-400">{item.caption}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="container-px py-16">

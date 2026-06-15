@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/products";
+import StoreBrowser from "@/components/StoreBrowser";
+import { getProducts, getCategories } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Store",
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default function StorePage() {
+  const products = getProducts();
+  const categories = getCategories().map((c) => c.name);
   const available = products.filter((p) => p.inStock);
   const sold = products.filter((p) => !p.inStock);
 
@@ -26,11 +29,7 @@ export default function StorePage() {
       </header>
 
       {available.length > 0 ? (
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {available.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </div>
+        <StoreBrowser products={available} categories={categories} />
       ) : (
         <div className="card mt-10 p-8 text-center text-steel-300">
           <p>Nothing in stock right now — but new pieces are added regularly.</p>

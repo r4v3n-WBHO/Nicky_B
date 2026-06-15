@@ -25,20 +25,15 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-steel-800 bg-steel-950/85 backdrop-blur">
       <div className="container-px flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="rounded bg-white p-1">
-            <Image
-              src={asset("/nicky_b_logo.jpg")}
-              alt={site.name}
-              width={44}
-              height={44}
-              className="h-9 w-auto"
-              priority
-            />
-          </span>
-          <span className="hidden font-serif text-lg tracking-wide text-steel-50 sm:block">
-            {site.shortName}
-          </span>
+        <Link href="/" className="flex items-center" onClick={() => setOpen(false)} aria-label={site.name}>
+          <Image
+            src={asset("/nicky_b_logo_white.png")}
+            alt={site.name}
+            width={243}
+            height={208}
+            className="h-12 w-auto sm:h-14"
+            priority
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

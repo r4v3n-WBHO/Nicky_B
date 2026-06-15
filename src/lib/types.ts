@@ -1,34 +1,7 @@
-export type Product = {
-  /** URL-safe identifier, e.g. "bushcraft-skinner" */
-  slug: string;
-  name: string;
-  /** Short one-line summary shown on cards */
-  tagline: string;
-  /** Longer description shown on the product page */
-  description: string;
-  /** Whether the piece is currently available (prices are enquiry-only) */
-  inStock: boolean;
-  /** Image paths relative to /public, first is the primary/cover image */
-  images: string[];
-  specs: ProductSpec[];
-  /** Optional category used for filtering, e.g. "Hunting", "Chef", "EDC" */
-  category?: string;
-};
-
-export type ProductSpec = {
-  label: string;
-  value: string;
-};
-
-export type GalleryItem = {
-  slug: string;
-  title: string;
-  image: string;
-  /** Short caption / story for the piece */
-  caption: string;
-  /** Optional year the piece was made */
-  year?: string;
-};
+/**
+ * Types for the custom-order builder. Store/gallery/category content types now
+ * live in `src/lib/content.ts` (loaded from the CMS-managed files in /content).
+ */
 
 /** A starting point a customer can pick and then customise. */
 export type CustomTemplate = {

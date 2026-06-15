@@ -8,20 +8,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "bg-remove": "node scripts/remove-bg.mjs"
+    "logo-white": "node scripts/logo-white.mjs"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
     "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@imgly/background-removal-node": "^1.4.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "sharp": "^0.35.1",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3"
   }

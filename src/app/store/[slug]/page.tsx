@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { products, getProduct } from "@/data/products";
+import { getProducts, getProduct } from "@/lib/content";
 import { asset } from "@/lib/asset";
 
 export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+  return getProducts().map((p) => ({ slug: p.slug }));
 }
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
@@ -20,6 +20,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   if (!product) notFound();
 
   const enquiry = `Hi Nicky, I'm interested in the "${product.name}". Is it still available, and what's the price?`;
+  const cover = product.images[0];
 
   return (
     <div className="container-px py-14">
@@ -30,15 +31,21 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
         {/* Images */}
         <div className="space-y-4">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-steel-800 bg-gradient-to-b from-steel-800 to-steel-950">
-            <Image
-              src={asset(product.images[0])}
-              alt={product.name}
-              fill
-              priority
-              className="object-contain p-6 drop-shadow-2xl"
-              sizes="(min-width: 1024px) 50vw, 100vw"
-            />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-steel-800 bg-steel-900">
+            {cover ? (
+              <Image
+                src={asset(cover)}
+                alt={product.name}
+                fill
+                priority
+                className="object-contain"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-steel-500">
+                Photo coming soon
+              </div>
+            )}
             {!product.inStock && (
               <span className="absolute left-4 top-4 rounded bg-steel-950/80 px-3 py-1 text-sm font-semibold uppercase tracking-wide text-steel-300">
                 Sold
@@ -48,8 +55,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           {product.images.length > 1 && (
             <div className="grid grid-cols-4 gap-3">
               {product.images.slice(1).map((src, i) => (
-                <div key={i} className="relative aspect-square overflow-hidden rounded-lg border border-steel-800 bg-gradient-to-b from-steel-800 to-steel-950">
-                  <Image src={asset(src)} alt={`${product.name} ${i + 2}`} fill className="object-contain p-2" sizes="120px" />
+                <div key={i} className="relative aspect-square overflow-hidden rounded-lg border border-steel-800 bg-steel-900">
+                  <Image src={asset(src)} alt={`${product.name} ${i + 2}`} fill className="object-cover" sizes="120px" />
                 </div>
               ))}
             </div>
@@ -64,12 +71,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             </span>
           )}
           <h1 className="mt-3 font-serif text-3xl text-steel-50">{product.name}</h1>
-          <p className="mt-2 text-lg text-steel-300">{product.tagline}</p>
+          {product.tagline && <p className="mt-2 text-lg text-steel-300">{product.tagline}</p>}
           <p className="mt-4 text-lg font-medium text-forge-300">
             {product.inStock ? "Enquire for price" : "Sold"}
           </p>
 
-          <p className="mt-6 text-steel-300">{product.description}</p>
+          {product.description && (
+            <p className="mt-6 whitespace-pre-line text-steel-300">{product.description}</p>
+          )}
 
           {product.specs.length > 0 && (
             <dl className="mt-6 divide-y divide-steel-800 rounded-lg border border-steel-800">
