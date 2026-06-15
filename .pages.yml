@@ -87,3 +87,13 @@ content:
       - { name: blurb, label: Extra detail (optional), type: text }
       - { name: linkLabel, label: Button label (optional), type: string }
       - { name: linkHref, label: Button link (optional), type: string }
+
+  - name: about
+    label: About Nicky (contact page)
+    type: file
+    path: content/about.json
+    format: json
+    fields:
+      - { name: heading, label: Heading, type: string }
+      - { name: image, label: Photo of Nicky, type: image }
+      - { name: body, label: Your story / why you make knives, type: text }

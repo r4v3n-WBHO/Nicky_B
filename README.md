@@ -53,6 +53,7 @@ GitHub Actions, so the live site updates a minute or two later.
 | **Gallery (past work)** | Add/edit showcase pieces with a photo + caption |
 | **Categories** | Add/rename/reorder the categories that knives can be filed under (these become the store's filter buttons) |
 | **Next event** | Update the home-page banner (title, date, location, blurb, button) or switch it off |
+| **About Nicky** | The "why I make knives" section on the contact page — heading, photo of Nicky, and his story |
 
 Photos uploaded in the CMS are stored in `public/images/uploads/` and shown
 **as-is** in tidy, uniform cards — so any clear phone photo looks good (no

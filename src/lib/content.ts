@@ -133,3 +133,13 @@ export function getEvent(): EventNews {
     location: "",
   });
 }
+
+export type About = {
+  heading: string;
+  image?: string;
+  body: string;
+};
+
+export function getAbout(): About {
+  return readJson<About>("about.json", { heading: "About", image: "", body: "" });
+}
