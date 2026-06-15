@@ -18,7 +18,7 @@ const CONTENT_DIR = path.join(process.cwd(), "content");
  */
 function cutOut(src: string): string {
   const m = src.match(/^\/images\/uploads\/(.+)\.(jpe?g|png|webp)$/i);
-  return m ? `/images/processed/${m[1]}.png` : src;
+  return m ? `/images/processed/${m[1]}.webp` : src;
 }
 
 export type ProductSpec = { label: string; value: string };

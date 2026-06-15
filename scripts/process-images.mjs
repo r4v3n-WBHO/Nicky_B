@@ -5,14 +5,16 @@
  * GitHub Actions deploy that fires when Nicky uploads a photo through the CMS.
  *
  * For each image in public/images/uploads/, it writes a transparent-background
- * PNG to public/images/processed/<name>.png. The site references the processed
- * version, so uploaded photos appear "cut out" automatically.
+ * WebP to public/images/processed/<name>.webp (much smaller than PNG). The site
+ * references the processed version, so uploaded photos appear "cut out"
+ * automatically.
  *
  * - Idempotent: a hash manifest skips images that haven't changed.
  * - Resilient: if cut-out fails for an image, it falls back to the original
  *   (converted to PNG) so the build never breaks and something always shows.
  */
 import { removeBackground } from "@imgly/background-removal-node";
+import sharp from "sharp";
 import { readdir, mkdir, writeFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import crypto from "node:crypto";
@@ -25,6 +27,7 @@ const SRC_DIR = path.join(ROOT, "public", "images", "uploads");
 const OUT_DIR = path.join(ROOT, "public", "images", "processed");
 const MANIFEST = path.join(OUT_DIR, "manifest.json");
 const IMG = /\.(jpe?g|png|webp)$/i;
+const MAX_EDGE = 1400; // cap the long edge — plenty sharp for cards + hover-zoom
 
 const sha1 = (buf) => crypto.createHash("sha1").update(buf).digest("hex");
 
@@ -46,7 +49,7 @@ async function main() {
 
   for (const file of files) {
     const srcPath = path.join(SRC_DIR, file);
-    const outName = file.replace(IMG, ".png");
+    const outName = file.replace(IMG, ".webp");
     const outPath = path.join(OUT_DIR, outName);
     const hash = sha1(readFileSync(srcPath));
     next[outName] = hash;
@@ -61,12 +64,19 @@ async function main() {
       const blob = await removeBackground(pathToFileURL(srcPath), {
         output: { format: "image/png" },
       });
-      await writeFile(outPath, Buffer.from(await blob.arrayBuffer()));
-      console.log("cut out");
+      const png = Buffer.from(await blob.arrayBuffer());
+      const webp = await sharp(png)
+        .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toBuffer();
+      await writeFile(outPath, webp);
+      console.log(`cut out (${Math.round(webp.length / 1024)} KB)`);
     } catch (err) {
-      // Fallback: keep the original (as PNG) so the image still appears.
-      const sharp = (await import("sharp")).default;
-      await sharp(srcPath).png().toFile(outPath);
+      // Fallback: keep the original (as WebP) so the image still appears.
+      await sharp(srcPath)
+        .resize({ width: MAX_EDGE, height: MAX_EDGE, fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toFile(outPath);
       console.log(`kept original (cut-out failed: ${err?.message || err})`);
     }
     processed++;

@@ -9,7 +9,7 @@ export const templates: CustomTemplate[] = [
     slug: "hunter",
     name: "Hunting Knife",
     description: "Drop-point or clip-point fixed blade built for the field.",
-    image: "/images/processed/hunter-horn.png",
+    image: "/images/processed/hunter-horn.webp",
     defaults: {
       bladeLengthMm: 115,
       bladeShape: "Drop point",
@@ -21,7 +21,7 @@ export const templates: CustomTemplate[] = [
     slug: "bushcraft",
     name: "Bushcraft Knife",
     description: "Tough full-tang all-rounder for the outdoors.",
-    image: "/images/processed/bowie-forged.png",
+    image: "/images/processed/bowie-forged.webp",
     defaults: {
       bladeLengthMm: 110,
       bladeShape: "Scandi grind",
@@ -33,7 +33,7 @@ export const templates: CustomTemplate[] = [
     slug: "chef",
     name: "Kitchen / Chef Knife",
     description: "Thin, sharp and balanced for the kitchen.",
-    image: "/images/processed/kitchen-chef.png",
+    image: "/images/processed/kitchen-chef.webp",
     defaults: {
       bladeLengthMm: 180,
       bladeShape: "Chef profile",
@@ -45,7 +45,7 @@ export const templates: CustomTemplate[] = [
     slug: "edc",
     name: "Everyday Carry",
     description: "Compact fixed blade or slip-joint for daily use.",
-    image: "/images/processed/skinner-red-g10.png",
+    image: "/images/processed/skinner-red-g10.webp",
     defaults: {
       bladeLengthMm: 75,
       bladeShape: "Drop point",
