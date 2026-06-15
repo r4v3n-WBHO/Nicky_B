@@ -8,16 +8,29 @@ import { site } from "@/data/site";
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const serif = Cinzel({ subsets: ["latin"], variable: "--font-serif", weight: ["500", "600", "700"] });
 
+const ogImage = `${site.url}/images/uploads/skinners-pair.jpg`;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: {
     default: `${site.shortName} — ${site.tagline}`,
     template: `%s — ${site.shortName}`,
   },
   description: site.description,
+  alternates: { canonical: "/" },
   openGraph: {
     title: site.name,
     description: site.description,
     type: "website",
+    url: site.url,
+    siteName: site.shortName,
+    images: [{ url: ogImage, width: 1200, height: 630, alt: site.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.name,
+    description: site.description,
+    images: [ogImage],
   },
 };
 
