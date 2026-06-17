@@ -21,7 +21,7 @@ export const templates: CustomTemplate[] = [
     slug: "bushcraft",
     name: "Bushcraft Knife",
     description: "Tough full-tang all-rounder for the outdoors.",
-    image: "/images/processed/bowie-forged.webp",
+    image: "/images/processed/bowie-hammered.webp",
     defaults: {
       bladeLengthMm: 110,
       bladeShape: "Scandi grind",

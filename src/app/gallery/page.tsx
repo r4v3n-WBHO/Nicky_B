@@ -6,7 +6,7 @@ import { asset } from "@/lib/asset";
 
 export const metadata: Metadata = {
   title: "The Work",
-  description: "A gallery of hand-forged knives made by Nicky Badenhorst.",
+  description: "A gallery of handmade knives by Nicky Badenhorst.",
 };
 
 export default function GalleryPage() {

@@ -60,7 +60,7 @@ export default function Footer() {
       <div className="border-t border-steel-800/70">
         <div className="container-px flex flex-col items-center justify-between gap-2 py-5 text-xs text-steel-500 sm:flex-row">
           <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-          <p>Hand-forged in {site.location}.</p>
+          <p>Handmade in {site.location}.</p>
         </div>
       </div>
     </footer>

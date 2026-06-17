@@ -24,10 +24,10 @@ export default function HomePage() {
               {site.location}
             </p>
             <h1 className="mt-2 font-serif text-3xl leading-tight text-steel-50 sm:mt-3 sm:text-5xl">
-              Hand-forged knives, made one at a time.
+              Handmade knives, made one at a time.
             </h1>
             <p className="mt-3 max-w-md text-base text-steel-300 sm:mt-5 sm:text-lg">
-              Custom hunting, bushcraft, kitchen and collector blades — forged and
+              Custom hunting, bushcraft, kitchen and collector blades — shaped and
               finished by hand by Nicky Badenhorst.
             </p>
             <div className="mt-5 flex flex-wrap gap-3 sm:mt-8">
@@ -40,7 +40,7 @@ export default function HomePage() {
             {heroImage && (
               <Image
                 src={asset(heroImage)}
-                alt="A hand-forged knife by Nicky Badenhorst"
+                alt="A handmade knife by Nicky Badenhorst"
                 fill
                 priority
                 className="object-contain p-4 drop-shadow-2xl sm:p-6"
@@ -57,7 +57,7 @@ export default function HomePage() {
           {[
             {
               title: "Made by hand",
-              body: "Every knife is forged, ground and finished individually — no two are exactly alike.",
+              body: "Every knife is shaped, ground and finished individually — no two are exactly alike.",
             },
             {
               title: "Built to use",

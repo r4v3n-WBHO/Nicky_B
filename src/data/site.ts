@@ -5,9 +5,9 @@
 export const site = {
   name: "Handmade Knives by Nicky Badenhorst",
   shortName: "Nicky B Knives",
-  tagline: "Hand-forged knives, made one at a time.",
+  tagline: "Handmade knives, made one at a time.",
   description:
-    "Custom, hand-made knives by Nicky Badenhorst. Hunting, bushcraft, kitchen and collector blades — forged and finished by hand in South Africa.",
+    "Custom, hand-made knives by Nicky Badenhorst. Hunting, bushcraft, kitchen and collector blades — shaped and finished by hand in South Africa.",
   // Full public address of the site (used for SEO: sitemap, social previews).
   // Update this if you move to a custom domain, e.g. "https://nickybknives.co.za".
   url: "https://r4v3n-wbho.github.io/Nicky_B",

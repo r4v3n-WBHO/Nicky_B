@@ -1,14 +1,14 @@
 ---
-name: Forged Bowie
+name: Hammered Bowie
 category: Bowie
-tagline: Hammer-finished forged blade with a brass guard.
+tagline: Hammer-finished blade with a brass guard.
 inStock: true
 order: 3
 images:
-  - /images/uploads/bowie-forged.jpg
+  - /images/uploads/bowie-hammered.jpg
 specs:
   - label: Steel
-    value: Forged carbon steel
+    value: High-carbon steel
   - label: Guard
     value: Brass
   - label: Handle
@@ -16,7 +16,7 @@ specs:
   - label: Sheath
     value: Hand-stitched leather
 description: >-
-  A hand-forged bowie with a rugged hammered finish, a solid brass guard and a
+  A handmade bowie with a rugged hammered finish, a solid brass guard and a
   figured hardwood handle. A proper using-and-collecting knife with real
   presence, paired with a press-stud leather sheath.
 ---
