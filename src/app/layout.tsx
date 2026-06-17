@@ -4,7 +4,9 @@ import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import NewsletterPopup from "@/components/NewsletterPopup";
 import { site } from "@/data/site";
+import { newsletterConfigured } from "@/lib/newsletter";
 
 // Privacy-friendly analytics (off until configured). Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN
 // to your site domain; works with plausible.io or any compatible/self-hosted
@@ -52,6 +54,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        {newsletterConfigured && <NewsletterPopup />}
         {analyticsDomain && (
           <Script defer data-domain={analyticsDomain} src={analyticsSrc} strategy="afterInteractive" />
         )}

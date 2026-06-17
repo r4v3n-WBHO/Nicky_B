@@ -1,9 +1,27 @@
 import Link from "next/link";
 import { site } from "@/data/site";
+import NewsletterForm from "@/components/NewsletterForm";
+import { newsletterConfigured } from "@/lib/newsletter";
 
 export default function Footer() {
   return (
     <footer className="border-t border-steel-800 bg-steel-950">
+      {newsletterConfigured && (
+        <div className="border-b border-steel-800/70">
+          <div className="container-px flex flex-col gap-5 py-8 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-md">
+              <h3 className="font-serif text-lg text-steel-50">Never miss a show</h3>
+              <p className="mt-1 text-sm text-steel-400">
+                Join the list for the occasional email when new knives are ready and
+                where to find Nicky next.
+              </p>
+            </div>
+            <div className="w-full md:w-80 md:shrink-0">
+              <NewsletterForm />
+            </div>
+          </div>
+        </div>
+      )}
       <div className="container-px grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <h3 className="font-serif text-lg text-steel-50">{site.name}</h3>

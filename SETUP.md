@@ -45,3 +45,19 @@ section of `README.md`.
       `NEXT_PUBLIC_BASE_PATH` to empty in the deploy workflow.
 - [ ] **Analytics**: add repo secret `PLAUSIBLE_DOMAIN` (privacy-friendly visitor
       stats). Free options: Cloudflare Web Analytics or GoatCounter — see README.
+
+## 7. Event newsletter (optional)
+The footer signup and the one-time welcome popup stay hidden until a provider is
+connected — so nothing shows until it actually works.
+- [ ] Create a free account at **MailerLite** (recommended) or **Brevo**.
+- [ ] Build a **signup form** there and turn on **double opt-in** (POPIA-friendly:
+      the subscriber confirms by email).
+- [ ] Copy the form's **POST URL** into `newsletter.actionUrl` in
+      `src/data/site.ts` — the comments there show the MailerLite/Brevo URL
+      formats and which field names to set.
+- [ ] Commit / re-deploy. The signup now appears in the footer and as a gentle
+      popup (shown once, then remembered).
+- [ ] Do a **test signup** and confirm the address arrives in your provider and
+      the confirmation email lands (the form submits silently, so a live test is
+      how you verify it).
+- [ ] Send event updates from the provider's dashboard whenever there's news.
