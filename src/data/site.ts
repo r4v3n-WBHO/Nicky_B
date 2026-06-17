@@ -23,21 +23,11 @@ export const site = {
     instagram: "",
     whatsapp: "https://wa.me/27833267141",
   },
-  // Event-updates newsletter. Paste the form POST URL from your email provider's
-  // embedded-form code to switch the signup on (footer + welcome popup); leave ""
-  // to keep it hidden. Free options: MailerLite (recommended) or Brevo.
-  //   MailerLite: https://assets.mailerlite.com/jsonp/<account>/forms/<id>/subscribe
-  //   Brevo:      https://<subdomain>.sibforms.com/serve/<id>
-  newsletter: {
-    actionUrl: "",
-    // Field names the provider expects for the email + optional first name:
-    //   MailerLite → email "fields[email]", name "fields[name]"
-    //   Brevo      → email "EMAIL",         name "FNAME"   (set name to "" to skip)
-    emailField: "fields[email]",
-    nameField: "fields[name]",
-    // Rare: extra hidden inputs a provider's form needs, e.g. { "ml-submit": "1" }.
-    hiddenFields: {} as Record<string, string>,
-  },
+  // Events-newsletter signup (footer + one-time popup). When someone signs up,
+  // their email is sent to Nicky via FormSubmit — the same email path as the
+  // contact form (needs NEXT_PUBLIC_FORMSUBMIT_ID; see SETUP.md). He then adds
+  // them to however he sends updates. Set to false to hide the signup.
+  newsletterSignup: true,
 };
 
 export type Site = typeof site;

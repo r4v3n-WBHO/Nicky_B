@@ -47,17 +47,13 @@ section of `README.md`.
       stats). Free options: Cloudflare Web Analytics or GoatCounter — see README.
 
 ## 7. Event newsletter (optional)
-The footer signup and the one-time welcome popup stay hidden until a provider is
-connected — so nothing shows until it actually works.
-- [ ] Create a free account at **MailerLite** (recommended) or **Brevo**.
-- [ ] Build a **signup form** there and turn on **double opt-in** (POPIA-friendly:
-      the subscriber confirms by email).
-- [ ] Copy the form's **POST URL** into `newsletter.actionUrl` in
-      `src/data/site.ts` — the comments there show the MailerLite/Brevo URL
-      formats and which field names to set.
-- [ ] Commit / re-deploy. The signup now appears in the footer and as a gentle
-      popup (shown once, then remembered).
-- [ ] Do a **test signup** and confirm the address arrives in your provider and
-      the confirmation email lands (the form submits silently, so a live test is
-      how you verify it).
-- [ ] Send event updates from the provider's dashboard whenever there's news.
+The footer signup + one-time welcome popup let visitors ask to hear about new
+knives and shows. A signup **emails the address to Nicky** via FormSubmit (the
+same path as the contact form) — he then adds them to however he sends updates.
+- [ ] Make sure the email path works (section 2 — `FORMSUBMIT_ID`). The signup
+      stays hidden until that's set.
+- [ ] Nothing else to wire up — it then appears in the footer and as a gentle
+      popup (shown once, then remembered). Set `newsletterSignup: false` in
+      `src/data/site.ts` to hide it.
+- [ ] To send an update, email your collected subscribers (BCC). If the list
+      grows, move it into a free tool like MailerLite or Brevo.

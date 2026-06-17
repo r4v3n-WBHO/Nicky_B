@@ -1,11 +1,9 @@
 import { site } from "@/data/site";
+import { formConfigured } from "@/lib/submitInquiry";
 
 /**
- * Newsletter signup config (lives in src/data/site.ts). The footer block and
- * welcome popup only render once a provider form URL has been filled in, so the
- * site never shows a signup that goes nowhere.
+ * The newsletter signup (footer block + welcome popup) appears only when it's
+ * switched on AND the email path is configured. A signup emails the address to
+ * Nicky via FormSubmit — the same path as the contact form.
  */
-export const newsletter = site.newsletter;
-
-/** True once a provider form URL is set — gates the footer block + popup. */
-export const newsletterConfigured = Boolean(site.newsletter.actionUrl);
+export const newsletterConfigured = site.newsletterSignup && formConfigured;

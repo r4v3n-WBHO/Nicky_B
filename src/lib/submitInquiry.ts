@@ -1,6 +1,6 @@
 import { site } from "@/data/site";
 
-export type InquiryKind = "contact" | "custom-order";
+export type InquiryKind = "contact" | "custom-order" | "newsletter";
 
 export type InquiryInput = {
   kind: InquiryKind;
@@ -11,6 +11,8 @@ export type InquiryInput = {
   details?: Record<string, string | number | undefined>;
   /** Optional reference-photo attachments (custom-order form). */
   files?: File[];
+  /** Anti-spam honeypot value — if non-empty, FormSubmit drops it as spam. */
+  honeypot?: string;
 };
 
 export type InquiryResult =
@@ -52,12 +54,15 @@ export async function submitInquiry(input: InquiryInput): Promise<InquiryResult>
   const subject =
     input.kind === "custom-order"
       ? `New custom knife order — ${input.name || "website visitor"}`
-      : `New website enquiry — ${input.name || "website visitor"}`;
+      : input.kind === "newsletter"
+        ? `New newsletter signup — ${input.email || "website visitor"}`
+        : `New website enquiry — ${input.name || "website visitor"}`;
 
   const form = new FormData();
   form.append("_subject", subject);
   form.append("_captcha", "false");
   form.append("_template", "table");
+  form.append("_honey", input.honeypot ?? "");
   form.append("Name", input.name || "");
   form.append("Email", input.email || "");
   form.append("Phone", input.phone || "");

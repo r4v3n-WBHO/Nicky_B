@@ -2,10 +2,12 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { templates, getTemplate } from "@/data/templates";
 import type { CustomConfig } from "@/lib/content";
 import { submitInquiry } from "@/lib/submitInquiry";
+import HoneypotField from "@/components/HoneypotField";
 import { site } from "@/data/site";
 import { asset } from "@/lib/asset";
 
@@ -103,6 +105,7 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
       message: String(data.get("message") || ""),
       details: summary,
       files,
+      honeypot: String(data.get("_honey") || ""),
     });
 
     if (result.ok) {
@@ -144,6 +147,7 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1fr,360px]">
+      <HoneypotField />
       {/* Left: builder */}
       <div className="space-y-8">
         {/* Step 1 — template */}
@@ -302,7 +306,8 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
           </div>
           <p className="mt-2 text-xs text-steel-500">
             Email your request (attach photos above), or send it straight to Nicky on
-            WhatsApp. Either way, include a phone or email so he can reply.
+            WhatsApp. Either way, include a phone or email so he can reply. See our{" "}
+            <Link href="/privacy" className="underline hover:text-forge-300">privacy note</Link>.
           </p>
         </section>
       </div>

@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { submitInquiry } from "@/lib/submitInquiry";
+import HoneypotField from "@/components/HoneypotField";
 import { site } from "@/data/site";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -30,6 +32,7 @@ export default function ContactForm() {
       email: String(data.get("email") || ""),
       phone: String(data.get("phone") || ""),
       message: String(data.get("message") || ""),
+      honeypot: String(data.get("_honey") || ""),
     });
 
     if (result.ok) {
@@ -68,6 +71,7 @@ export default function ContactForm() {
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="card space-y-4 p-6">
+      <HoneypotField />
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="field-label" htmlFor="name">Name</label>
@@ -94,7 +98,8 @@ export default function ContactForm() {
       </div>
 
       <p className="text-xs text-steel-500">
-        Provide an email or phone number so Nicky can reply.
+        Provide an email or phone number so Nicky can reply. See our{" "}
+        <Link href="/privacy" className="underline hover:text-forge-300">privacy note</Link>.
       </p>
 
       {status === "error" && (

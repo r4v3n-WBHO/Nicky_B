@@ -5,7 +5,7 @@ import { getProducts } from "@/lib/content";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages = ["", "/gallery", "/store", "/custom", "/contact"];
+  const pages = ["", "/gallery", "/store", "/custom", "/contact", "/privacy"];
   const staticRoutes = pages.map((p) => ({
     url: `${site.url}${p}`,
     changeFrequency: "weekly" as const,
