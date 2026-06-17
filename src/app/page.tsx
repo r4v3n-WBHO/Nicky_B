@@ -1,10 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import EventBanner from "@/components/EventBanner";
+import JsonLd from "@/components/JsonLd";
 import { getProducts, getGallery } from "@/lib/content";
 import { site } from "@/data/site";
+import { organizationJsonLd } from "@/lib/seo";
 import { asset } from "@/lib/asset";
+
+export const metadata: Metadata = {
+  alternates: { canonical: `${site.url}/` },
+};
 
 export default function HomePage() {
   const featured = getProducts().filter((p) => p.inStock).slice(0, 3);
@@ -13,6 +20,7 @@ export default function HomePage() {
 
   return (
     <>
+      <JsonLd data={organizationJsonLd()} />
       {/* News / next event */}
       <EventBanner />
 

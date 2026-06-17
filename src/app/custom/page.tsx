@@ -3,11 +3,13 @@ import { Suspense } from "react";
 import CustomOrderBuilder from "@/components/CustomOrderBuilder";
 import TrustInfo from "@/components/TrustInfo";
 import { getCustomConfig, getInfo } from "@/lib/content";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Custom Order",
   description:
     "Design your own hand-made knife. Start from a template or build from scratch and request a quote from Nicky Badenhorst.",
+  alternates: { canonical: `${site.url}/custom/` },
 };
 
 export default function CustomPage() {

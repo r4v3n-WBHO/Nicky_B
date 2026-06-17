@@ -4,10 +4,12 @@ import ProductCard from "@/components/ProductCard";
 import StoreBrowser from "@/components/StoreBrowser";
 import TrustInfo from "@/components/TrustInfo";
 import { getProducts, getCategories, getInfo } from "@/lib/content";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Store",
   description: "Hand-made knives currently available to buy from Nicky Badenhorst.",
+  alternates: { canonical: `${site.url}/store/` },
 };
 
 export default function StorePage() {

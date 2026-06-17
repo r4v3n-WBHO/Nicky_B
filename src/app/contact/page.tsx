@@ -10,6 +10,7 @@ import { asset } from "@/lib/asset";
 export const metadata: Metadata = {
   title: "Contact",
   description: `Get in touch with ${site.name}.`,
+  alternates: { canonical: `${site.url}/contact/` },
 };
 
 export default function ContactPage() {

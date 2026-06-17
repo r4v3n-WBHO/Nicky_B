@@ -3,10 +3,12 @@ import Link from "next/link";
 import ZoomImage from "@/components/ZoomImage";
 import { getGallery } from "@/lib/content";
 import { asset } from "@/lib/asset";
+import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "The Work",
   description: "A gallery of handmade knives by Nicky Badenhorst.",
+  alternates: { canonical: `${site.url}/gallery/` },
 };
 
 export default function GalleryPage() {

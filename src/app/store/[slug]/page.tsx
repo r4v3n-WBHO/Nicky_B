@@ -6,6 +6,9 @@ import ZoomImage from "@/components/ZoomImage";
 import TrustInfo from "@/components/TrustInfo";
 import { getProducts, getProduct, getInfo } from "@/lib/content";
 import { asset } from "@/lib/asset";
+import { site } from "@/data/site";
+import { productJsonLd } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
 
 export function generateStaticParams() {
   return getProducts().map((p) => ({ slug: p.slug }));
@@ -14,7 +17,37 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const product = getProduct(params.slug);
   if (!product) return { title: "Not found" };
-  return { title: product.name, description: product.tagline };
+
+  const url = `${site.url}/store/${product.slug}/`;
+  const description = product.tagline ?? product.description;
+  // Share previews use the original photo — the displayed image is a
+  // background-removed WebP, which scrapers like WhatsApp render poorly.
+  const images = product.rawImages.map((p) => `${site.url}${p}`);
+
+  return {
+    title: product.name,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      title: product.name,
+      description,
+      url,
+      ...(images.length
+        ? { images: images.map((u) => ({ url: u, alt: product.name })) }
+        : {}),
+    },
+    ...(images.length
+      ? {
+          twitter: {
+            card: "summary_large_image",
+            title: product.name,
+            description,
+            images,
+          },
+        }
+      : {}),
+  };
 }
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
@@ -27,6 +60,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="container-px py-14">
+      <JsonLd data={productJsonLd(product)} />
       <Link href="/store" className="text-sm text-steel-400 hover:text-forge-300">
         &larr; Back to store
       </Link>

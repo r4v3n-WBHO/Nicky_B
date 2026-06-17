@@ -32,6 +32,9 @@ export type Product = {
   inStock: boolean;
   order: number;
   images: string[];
+  /** Original uploaded image paths (before background removal) — used for
+   *  social-share previews and structured data. */
+  rawImages: string[];
   specs: ProductSpec[];
 };
 
@@ -94,17 +97,21 @@ function byOrderThen(field: "name" | "title") {
 
 export function getProducts(): Product[] {
   return readCollection("products")
-    .map(({ slug, data }) => ({
-      slug,
-      name: String(data.name ?? slug),
-      category: data.category ? String(data.category) : undefined,
-      tagline: data.tagline ? String(data.tagline) : undefined,
-      description: data.description ? String(data.description) : undefined,
-      inStock: data.inStock !== false,
-      order: Number(data.order ?? 0),
-      images: Array.isArray(data.images) ? (data.images as string[]).map(cutOut) : [],
-      specs: Array.isArray(data.specs) ? (data.specs as ProductSpec[]) : [],
-    }))
+    .map(({ slug, data }) => {
+      const raw = Array.isArray(data.images) ? (data.images as string[]) : [];
+      return {
+        slug,
+        name: String(data.name ?? slug),
+        category: data.category ? String(data.category) : undefined,
+        tagline: data.tagline ? String(data.tagline) : undefined,
+        description: data.description ? String(data.description) : undefined,
+        inStock: data.inStock !== false,
+        order: Number(data.order ?? 0),
+        images: raw.map(cutOut),
+        rawImages: raw,
+        specs: Array.isArray(data.specs) ? (data.specs as ProductSpec[]) : [],
+      };
+    })
     .sort((a, b) => byOrderThen("name")(a, b));
 }
 
