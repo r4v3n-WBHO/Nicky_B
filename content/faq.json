@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "question": "How do I order a knife?",
+      "answer": "Browse the store for pieces available now, or use the custom builder to design your own, then send an enquiry. There's no online checkout — Nicky confirms the details, price and delivery with you directly before anything is paid."
+    },
+    {
+      "question": "How much does a knife cost?",
+      "answer": "It depends on the size, materials and detail of each piece, so prices are on enquiry. Send a message or a custom spec and Nicky will reply with a price."
+    },
+    {
+      "question": "How long does a custom knife take?",
+      "answer": "Roughly 4–6 weeks, depending on the build and how busy the workshop is. Nicky will give you a timeline when he confirms your order."
+    },
+    {
+      "question": "How do I pay?",
+      "answer": "Card (Visa / Mastercard via Yoco) or EFT. Payment is arranged with Nicky directly once your order is confirmed — nothing is charged through the website."
+    },
+    {
+      "question": "Do you deliver, and where?",
+      "answer": "Delivery is arranged with you when you order. Knives can usually be couriered anywhere in South Africa. For orders outside South Africa, please ask first — some couriers and countries restrict shipping blades."
+    },
+    {
+      "question": "Is there a guarantee?",
+      "answer": "Yes — every knife is hand-made and guaranteed against workmanship faults. If something isn't right, talk to Nicky."
+    },
+    {
+      "question": "Can I have a knife personalised or engraved?",
+      "answer": "Often, yes. Mention what you'd like in your custom request and Nicky will let you know what's possible."
+    },
+    {
+      "question": "How do I look after my knife?",
+      "answer": "Keep it clean and dry after use. Carbon-steel blades naturally develop a patina and like a light wipe of oil now and then; stainless is lower-maintenance. Avoid the dishwasher."
+    },
+    {
+      "question": "Can I see the knives in person?",
+      "answer": "Sometimes — Nicky exhibits at markets and shows around Johannesburg. Keep an eye on the banner at the top of the home page for the next event."
+    }
+  ]
+}

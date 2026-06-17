@@ -188,6 +188,15 @@ export function getInfo(): ShopInfo {
   return readJson<ShopInfo>("info.json", { leadTime: "", guarantee: "", payments: "" });
 }
 
+export type FaqItem = { question: string; answer: string };
+
+export function getFaq(): FaqItem[] {
+  const data = readJson<{ items?: FaqItem[] }>("faq.json", {});
+  return Array.isArray(data.items)
+    ? data.items.filter((i) => i?.question && i?.answer)
+    : [];
+}
+
 export function getCustomConfig(): CustomConfig {
   const d = readJson<Partial<CustomConfig>>("custom.json", {});
   const list = (v: unknown, fallback: string[]) =>

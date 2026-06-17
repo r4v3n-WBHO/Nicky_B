@@ -119,3 +119,17 @@ content:
       - { name: leadTime, label: Custom-order lead time, type: text }
       - { name: guarantee, label: Guarantee / returns, type: text }
       - { name: payments, label: Payments accepted, type: text }
+
+  - name: faq
+    label: FAQ & shipping
+    type: file
+    path: content/faq.json
+    format: json
+    fields:
+      - name: items
+        label: Questions & answers
+        type: object
+        list: true
+        fields:
+          - { name: question, label: Question, type: string }
+          - { name: answer, label: Answer, type: text }

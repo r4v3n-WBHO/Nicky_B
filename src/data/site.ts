@@ -16,7 +16,7 @@ export const site = {
   phoneHref: "+27833267141",
   // Leave blank until Nicky confirms an email address.
   email: "",
-  location: "South Africa",
+  location: "Johannesburg, South Africa",
   // Optional social links — leave blank to hide.
   socials: {
     facebook: "",

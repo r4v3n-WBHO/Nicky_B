@@ -37,6 +37,7 @@ export default function Footer() {
             <li><Link href="/gallery" className="text-steel-300 hover:text-forge-300">The Work</Link></li>
             <li><Link href="/store" className="text-steel-300 hover:text-forge-300">Store</Link></li>
             <li><Link href="/custom" className="text-steel-300 hover:text-forge-300">Custom Order</Link></li>
+            <li><Link href="/faq" className="text-steel-300 hover:text-forge-300">FAQ &amp; shipping</Link></li>
             <li><Link href="/contact" className="text-steel-300 hover:text-forge-300">Contact</Link></li>
           </ul>
         </nav>
