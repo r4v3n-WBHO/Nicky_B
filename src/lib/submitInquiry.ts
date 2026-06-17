@@ -30,6 +30,16 @@ const FORMSUBMIT_ID = process.env.NEXT_PUBLIC_FORMSUBMIT_ID;
 /** True when the forms have been wired up to deliver email. */
 export const formConfigured = Boolean(FORMSUBMIT_ID);
 
+/**
+ * Standard (non-AJAX) FormSubmit endpoint. The AJAX endpoint used below is great
+ * for text but silently drops file attachments, so the custom-order form (which
+ * takes reference photos) posts here instead — as a real multipart form, via a
+ * hidden iframe. Empty when not configured.
+ */
+export const formActionUrl = FORMSUBMIT_ID
+  ? `https://formsubmit.co/${encodeURIComponent(FORMSUBMIT_ID)}`
+  : "";
+
 /** Total attachment size FormSubmit accepts (10 MB across all files). */
 export const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 

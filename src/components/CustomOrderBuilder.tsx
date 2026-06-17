@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { templates, getTemplate } from "@/data/templates";
 import type { CustomConfig } from "@/lib/content";
-import { submitInquiry } from "@/lib/submitInquiry";
+import { formActionUrl } from "@/lib/submitInquiry";
 import HoneypotField from "@/components/HoneypotField";
 import { site } from "@/data/site";
 import { asset } from "@/lib/asset";
@@ -35,6 +35,7 @@ type Selections = {
 };
 
 const SCRATCH = "scratch";
+const SINK_NAME = "custom-order-sink";
 
 function defaultsFor(slug: string, config: CustomConfig): Selections {
   const t = slug === SCRATCH ? undefined : getTemplate(slug);
@@ -64,6 +65,7 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
   const [error, setError] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
+  const expecting = useRef(false);
 
   const filesMb = files.reduce((n, f) => n + f.size, 0) / (1024 * 1024);
   const waBase =
@@ -91,29 +93,41 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
     [sel],
   );
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     const data = new FormData(e.currentTarget);
-    setStatus("sending");
-    setError("");
-
-    const result = await submitInquiry({
-      kind: "custom-order",
-      name: String(data.get("name") || ""),
-      email: String(data.get("email") || ""),
-      phone: String(data.get("phone") || ""),
-      message: String(data.get("message") || ""),
-      details: summary,
-      files,
-      honeypot: String(data.get("_honey") || ""),
-    });
-
-    if (result.ok) {
-      setStatus("sent");
-    } else {
+    const email = String(data.get("email") || "").trim();
+    const phone = String(data.get("phone") || "").trim();
+    if (!email && !phone) {
+      e.preventDefault();
       setStatus("error");
-      setError(result.error);
+      setError("Please add an email or phone number so Nicky can reply.");
+      return;
     }
+    if (filesMb > 10) {
+      e.preventDefault();
+      setStatus("error");
+      setError("Photos are too large — keep the total under 10 MB.");
+      return;
+    }
+    // Let the native multipart POST proceed into the hidden iframe: FormSubmit's
+    // AJAX endpoint can't carry file attachments, but a real form POST can, and
+    // the iframe keeps the visitor here so we can show the confirmation below.
+    setError("");
+    setStatus("sending");
+    expecting.current = true;
+    // Safety net in case the iframe never reports back (e.g. offline).
+    window.setTimeout(() => {
+      if (expecting.current) {
+        expecting.current = false;
+        setStatus("sent");
+      }
+    }, 8000);
+  }
+
+  function handleSinkLoad() {
+    if (!expecting.current) return; // ignore the iframe's initial empty load
+    expecting.current = false;
+    setStatus("sent");
   }
 
   function openWhatsApp() {
@@ -146,9 +160,34 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
   }
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1fr,360px]">
-      <HoneypotField />
-      {/* Left: builder */}
+    <>
+      {/* Submissions post here so the page doesn't navigate away. */}
+      <iframe
+        name={SINK_NAME}
+        title="Custom order"
+        aria-hidden="true"
+        tabIndex={-1}
+        className="hidden"
+        onLoad={handleSinkLoad}
+      />
+      <form
+        ref={formRef}
+        action={formActionUrl}
+        method="POST"
+        encType="multipart/form-data"
+        target={SINK_NAME}
+        onSubmit={onSubmit}
+        className="grid gap-8 lg:grid-cols-[1fr,360px]"
+      >
+        <HoneypotField />
+        <input type="hidden" name="_subject" value="New custom knife order (website)" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        {/* The live spec selections, sent as form fields. */}
+        {Object.entries(summary).map(([k, v]) => (
+          <input key={k} type="hidden" name={k} value={String(v)} />
+        ))}
+        {/* Left: builder */}
       <div className="space-y-8">
         {/* Step 1 — template */}
         <section>
@@ -290,6 +329,7 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
               </label>
               <input
                 id="photos"
+                name="Reference photo"
                 type="file"
                 accept="image/*"
                 multiple
@@ -347,7 +387,8 @@ export default function CustomOrderBuilder({ config }: { config: CustomConfig })
           </p>
         </div>
       </aside>
-    </form>
+      </form>
+    </>
   );
 }
 
